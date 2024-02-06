@@ -1,0 +1,43 @@
+/* Reset default margin and padding */
+body, input, button {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Set the container to full viewport height */
+}
+.box {
+    border: 1px solid #ccc; /* Add border */
+    background-color: rgb(48, 48, 48);
+    padding: 20px; /* Add padding */
+    border-radius: 5px; /* Add border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add box shadow */
+}
+
+.login-form {
+    text-align: center;
+}
+
+input, button {
+    display: block;
+    margin-bottom: 0.2px;
+    width: 200px; /* Set the width of input fields and button */
+}
+
+.game-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 5px;
+    margin: 10px;
+}
+.game-link:hover {
+    background-color: #45a049;
+}

@@ -5,16 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My app</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 
 <body>
 
-    <div>
-        Name : <input type="text" id="name"><br>
-        Email: <input type="email" id="email"><br />
-        Password: <input type="password" id="pswHash"><br />
-        <button id="createUserButton">Create User</button>
+     <div class="container">
+        <div class="box">
+            <div class="login-form">
+                <input type="text" id="name" placeholder="Name"><br>
+                <input type="email" id="email" placeholder="Email"><br />
+                <input type="password" id="pswHash" placeholder="Password"><br />
+                <button id="createUserButton">Create User</button>
+            </div>
+        </div>
     </div>
 
     <script>
