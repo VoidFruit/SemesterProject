@@ -8,12 +8,6 @@ USER_API.use(express.json());
 // Assuming you have some data structure to store users
 let users = [];
 
-//fetch user scores
-USER_API.get('/scores', (req, res) => {
-    const userScores = users.map(user => ({ name: user.name, score: 'N/a' }));
-    res.status(HTTPCodes.SuccesfullRespons.Ok).json(userScores);
-});
-
 function assignID(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let randomID = '';
@@ -39,9 +33,9 @@ USER_API.get('/:id', (req, res) => {
     const user = users.find(u => u.id === userId);
 
     if (user) {
-        res.status(HTTPCodes.SuccesfullRespons.Ok).json(user);
+        res.status(HTTPCodes.SuccesfullRespons.Ok)(user);
     } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).end();
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound) ();
     }
 });
 
