@@ -1,67 +1,94 @@
-import express, { response } from "express";
-import User from "../modules/user.mjs";
+import express from "express";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
 
-
-
-
 const USER_API = express.Router();
-USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
+USER_API.use(express.json());
 
-const users = [];
+// Assuming you have some data structure to store users
+let users = [];
 
-USER_API.get('/', (req, res, next) => {
-    SuperLogger.log("Demo of logging tool");
-    SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
-})
+function assignID(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomID = '';
 
-USER_API.get('/:id', (req, res, next) => {
-
-    // Tip: All the information you need to get the id part of the request can be found in the documentation 
-    // https://expressjs.com/en/guide/routing.html (Route parameters)
-
-    /// TODO: 
-    // Return user object
-})
-
-USER_API.post('/', (req, res, next) => {
-
-    // This is using javascript object destructuring.
-    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
-    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
-    const { name, email, password } = req.body;
-
-    if (name != "" && email != "" && password != "") {
-        const user = new user();
-        user.name = name;
-        user.email = email;
-
-        ///TODO: Do not save passwords.
-        user.pswHash = password;
-
-        ///TODO: Does the user exist?
-        let exists = false;
-
-        if (!exists) {
-            users.push(user);
-            res.status(HTTPCodes.SuccesfullRespons.Ok).end();
-        } else {
-            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
-        }
-
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        randomID += characters.charAt(randomIndex);
     }
 
+    return randomID;
+}
+
+USER_API.get('/', (req, res) => {
+    // Log users in console
+    console.log("Existing Users:");
+    console.log(users);
+
+    res.status(HTTPCodes.SuccesfullRespons.Ok).json(users);
+});
+
+USER_API.get('/:id', (req, res) => {
+    const userId = req.params.id;
+    const user = users.find(u => u.id === userId);
+
+    if (user) {
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(user);
+    } else {
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).end();
+    }
+});
+
+USER_API.post('/', (req, res) => {
+    const { name, email, pswHash } = req.body;
+
+    if (name && email && pswHash) {
+        const newUser = {
+            id: assignID(5),
+            name: name,
+            email: email,
+            pswHash: pswHash
+        };
+
+        users.push(newUser);
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(newUser);
+        console.log("Existing Users:");
+    } else {
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
+    }
 });
 
 USER_API.put('/:id', (req, res) => {
-    /// TODO: Edit user
-})
+    const userId = req.params.id;
+    const { name, pswHash } = req.body;
+
+    const userIndex = users.findIndex(u => u.id === userId);
+
+    if (userIndex !== -1) {
+        // Update user if found
+        users[userIndex] = {
+            ...users[userIndex],
+            name: name || users[userIndex].name,
+            email: email || users[userIndex].email,
+            pswHash: pswHash || users[userIndex].pswHash
+        };
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(users[userIndex]);
+    } else {
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).end();
+    }
+});
 
 USER_API.delete('/:id', (req, res) => {
-    /// TODO: Delete user.
-})
+    const userId = req.params.id;
+    const userIndex = users.findIndex(u => u.id === userId);
 
-export default USER_API
+    if (userIndex !== -1) {
+        // Remove user if found
+        users.splice(userIndex, 1);
+        res.status(HTTPCodes.SuccesfullRespons.Ok).end();
+    } else {
+        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).end();
+    }
+});
+
+export default USER_API;
