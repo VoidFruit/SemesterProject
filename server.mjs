@@ -1,5 +1,7 @@
 import express from 'express'; // Express is installed using npm
 import USER_API from './routes/usersRoute.mjs'; // This is where we have defined the API for working with users.
+import BATTLE_API from './routes/battleRoute.mjs'; // This is where we have defined the API for working with multiplayer games.
+import SESSION_API from './routes/sessionRoute.mjs'; // This is where we have defined the API for working with participants in multiplayer games.
 import SCORE_API from './routes/scoreRoute.mjs'; // This is where we have defined the API for working with the game.
 import SuperLogger from './modules/SuperLogger.mjs';
 // Creating an instance of the server

@@ -1,3 +1,4 @@
+import User from "../modules/user.mjs";
 import express from "express";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
@@ -41,7 +42,7 @@ USER_API.get('/:id', (req, res) => {
 
 USER_API.post('/', (req, res) => {
     const { name, email, pswHash } = req.body;
-
+    
     if (name && email && pswHash) {
         const newUser = {
             id: assignID(5),
