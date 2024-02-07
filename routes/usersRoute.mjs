@@ -1,5 +1,5 @@
-import User from "../modules/user.mjs";
 import express from "express";
+import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
 
@@ -34,49 +34,50 @@ USER_API.get('/:id', (req, res) => {
     const user = users.find(u => u.id === userId);
 
     if (user) {
-        res.status(HTTPCodes.SuccesfullRespons.Ok)(user);
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(user);
     } else {
         res.status(HTTPCodes.ClientSideErrorRespons.NotFound) ();
     }
 });
 
-USER_API.post('/', (req, res) => {
-    const { name, email, pswHash } = req.body;
-    
-    if (name && email && pswHash) {
-        const newUser = {
-            id: assignID(5),
-            name: name,
-            email: email,
-            pswHash: pswHash
-        };
+USER_API.post('/', (req, res, next) => {
+    console.log("Received request to create user:");
+    const { name, email, password, score, isAdmin} = req.body;
+    if (name != "" && email != "" && password != "") {
+        const user = new User(); 
+        user.name = name;
+        user.email = email;
+        user.id = assignID(5);
+        user.score = score;
+        user.isAdmin = isAdmin;
+        ///TODO: Do not save passwords.
+        user.pswHash = password;
 
-        users.push(newUser);
-        res.status(HTTPCodes.SuccesfullRespons.Ok).json(newUser);
-        console.log("Existing Users:");
+        ///TODO: Does the user exist?
+        let exists = false;
+
+        if (!exists) {
+            users.push(user);
+            res.status(HTTPCodes.SuccesfullRespons.Ok).end();
+            console.log("Added user:" + user.name);
+            users.forEach(element => {
+              console.log("Users array contains: " + element.name);
+            });
+
+        } else {
+            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+        }
+
     } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data fields").end();
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
     }
+
 });
 
 USER_API.put('/:id', (req, res) => {
     const userId = req.params.id;
     const { name, pswHash } = req.body;
 
-    const userIndex = users.findIndex(u => u.id === userId);
-
-    if (userIndex !== -1) {
-        // Update user if found
-        users[userIndex] = {
-            ...users[userIndex],
-            name: name || users[userIndex].name,
-            email: email || users[userIndex].email,
-            pswHash: pswHash || users[userIndex].pswHash
-        };
-        res.status(HTTPCodes.SuccesfullRespons.Ok).json(users[userIndex]);
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).end();
-    }
 });
 
 USER_API.delete('/:id', (req, res) => {

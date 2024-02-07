@@ -19,17 +19,9 @@ server.use(logger.createAutoHTTPRequestLogger()); // Will logg all http method r
 server.use(express.static('public'));
 
 // Telling the server to use the USER_API (all urls that uses this code will have to have the /user after the base address)
-server.use("/user", USER_API);
-
-server.use("/score", SCORE_API);
-
-// A get request handler example)
-server.get("/", (req, res, next) => {
-
-    req.originalUrl
-
-    res.status(200).send(JSON.stringify({ msg: "These are not the droids...." })).end();
-});
+server.use("/user", USER_API); //USERS AND SCORES
+server.use("/session", SESSION_API);
+server.use("/battle", BATTLE_API);
 
 // Start the server 
 server.listen(server.get('port'), function () {

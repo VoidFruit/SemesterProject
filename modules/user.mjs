@@ -6,7 +6,8 @@ class User {
         this.email;
         this.pswHash;
         this.name;
-        this.hiscore;
+        this.score;
+        this.isAdmin;
     }
 }
 
