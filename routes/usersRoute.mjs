@@ -81,8 +81,8 @@ USER_API.put('/:id', (req, res) => {
 });
 
 USER_API.delete('/:id', (req, res) => {
-    const userId = req.params.id;
-    const userIndex = users.findIndex(u => u.id === userId);
+    const userID = req.params.id;
+    const userIndex = users.findIndex(u => u.id === userID);
 
     if (userIndex !== -1) {
         // Remove user if found

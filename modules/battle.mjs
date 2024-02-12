@@ -2,7 +2,7 @@ class Battle {
 
     constructor() {
     
-        this.battleID;
+        this.id;
         this.numberOfPlayers;
         this.startDate;
         this.endDate;
