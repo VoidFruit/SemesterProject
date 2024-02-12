@@ -31,11 +31,11 @@ BATTLE_API.get('/', (req, res) => {
 
 BATTLE_API.post('/', (req, res, next) => {
     console.log("Received request to create battle:");
-    const { battleID, numberOfPlayers } = req.body;
+    const { id, numberOfPlayers } = req.body;
     const battle = new Battle();
-    battle.battleID = assignID(5);
+    battle.id = assignID(5);
     battle.numberOfPlayers = numberOfPlayers;
- 
+
     battles.push(battle);
     res.status(HTTPCodes.SuccesfullRespons.Ok).end();
     console.log("Added battle:" + battle.id);
@@ -46,13 +46,26 @@ BATTLE_API.post('/', (req, res, next) => {
 });
 
 BATTLE_API.put('/:id', (req, res) => {
-    const battleId = req.params.id;
-    const { battleID, numberOfPlayers, startDate, endDate } = req.body;
+    const battleID = req.params.id;
+    const { id, numberOfPlayers, startDate, endDate } = req.body;
+
+    const battleIndex = battles.findIndex(b => b.id === Number(battleID)); // Convert string ID to number if necessary
+
+    if (battleIndex === -1) {
+        // If not found, return a 404 Not Found response
+        return res.status(404).send({ message: 'Battle not found' });
+    } else {
+        // Update the battle properties
+        let battle = battles[battleIndex];
+        if (numberOfPlayers !== undefined) battle.numberOfPlayers = numberOfPlayers;
+        if (startDate !== undefined) battle.startDate = new Date(startDate);
+        if (endDate !== undefined) battle.endDate = new Date(endDate);
+    }
 });
 
 BATTLE_API.delete('/:id', (req, res) => {
-    const battleId = req.params.id;
-    const battleIndex = battles.findIndex(u => u.id === battleId);
+    const battleID = req.params.id;
+    const battleIndex = battles.findIndex(b => b.id === battleID);
 
     if (battleIndex !== -1) {
         // Remove battle if found
