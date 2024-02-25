@@ -1,57 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My app</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My app</title>
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
-
-
 <body>
-
-     <div class="container">
-        <div class="box">
-            <div class="login-form">
-                <input type="text" id="name" placeholder="Name"><br>
-                <input type="email" id="email" placeholder="Email"><br />
-                <input type="password" id="pswHash" placeholder="Password"><br />
-                <button id="createUserButton">Create User</button>
-            </div>
-        </div>
+  <header class="site-header">
+    <a href="/">The logo</a>
+    <nav>
+      <ul class="site-menu" role="list">
+        <li><a href="/">Instructions</a></li>
+        <li><a href="/">About</a></li>
+        <li><a href="/">Settings</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <!-- Start: The welcome scene -->
+    <div class="container" id="welcomeScene">
+      <div class="text-center">
+        <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
+        <h1 style="font-size: 6rem;">Game Title</h1>
+        <p class="text-lg text-muted" style="margin-top: 1.5rem;">Challenge your brain!</p>
+        <button class="big-button" style="margin-top: 2.5rem;">Click to play</button>
+      </div>
     </div>
+    <!-- End: The welcome scene -->
 
-    <script>
+    <!-- Start: The game scene-->
+    <div class="container" id="gameScene">
+      <div class="text-center" style="padding-top: 3rem;">
+        <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
+        <h1 id="mainTitle" style="font-size: 6rem;">Get Ready!!</h1>
+        <p id="subTitle" class="text-lg text-muted" style="margin-top: 1.5rem;">Memorize the icon sequence.</p>
+      </div>
+      <!-- Start: The icon sequence display -->
+      <div class="icon-sequence">
+        <div id="iconContainer" class="icon-container">
+          <svg class="icon icon-6x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#chat-dots-fill"/>
+          </svg>
+        </div>
+      </div>
+      <!-- End: The icon sequence display -->
+      <!-- Start: The icon button grid - for guessing -->
+      <div class="icon-grid" style="margin-top: 3rem;">
+        <button>
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#chat-right-quote"/>
+          </svg>
+        </button>
+        <button>
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#circle-fill"/>
+          </svg>
+        </button>
+        <button>
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#cloud-drizzle-fill"/>
+          </svg>
+        </button>
+        <button>
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#coin"/>
+          </svg>
+        </button>
+        <button>
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#credit-card-fill"/>
+          </svg>
+        </button>
+        <button>
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#cloud-drizzle-fill"/>
+          </svg>
+        </button>
+        <button class="correct">
+          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#coin"/>
+          </svg>
+        </button>
+      </div>
+      <!-- End: The icon button grid - for guessing -->
+    </div>
+    <!-- End: The game scene -->
 
-        const createUserButton = document.getElementById("createUserButton");
+    <!-- Start: The game over scene -->
+    <div class="container" id="gameOverScene">
+      <div class="text-center">
+        <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
+        <h1 style="font-size: 6rem;">Game Over</h1>
+        <p class="text-lg text-muted" style="margin-top: 1.5rem;">Lorem ipsum dolor sit amet</p>
+        <button class="big-button" style="margin-top: 2.5rem;">Try again</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th scope="col">Username</th>
+            <th scope="col">Hiscore</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Mark</td>
+            <td>400</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Mark</td>
+            <td>200</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Mark</td>
+            <td>100</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- End: The game over scene -->
 
-        createUserButton.onclick = async function (e) {
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const pswHash = document.getElementById("pswHash").value;
+    <!-- Start: Create user form -->
+    <div class="container" id="userFormContainer">
+      <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
+      <div class="form-layout-stack" style="max-width: 500px;margin-bottom: 1.5rem;">
+        <label>Name :</label><input type="text" id="name">
+        <label for="">Email:</label><input type="email" id="email">
+        <label for="">Password:</label><input type="password" id="pswHash">
+      </div>
+      <button class="medium-button" id="createUserButton">Create User</button>
+    </div>
+    <!-- End: Create user form -->
 
-            const user = { name, email, pswHash };
+    <!-- Start: List all users -->
+    <div class="container" id="usersContainer"><h2 style="margin-bottom: 1.5rem;">All Users</h2></div>
+    <!-- End: List all users -->
+  </main>
+  <footer class="site-footer">
+    The footer <p id="Output"></p>
+  </footer>
+  <script>
 
-            const response = await postTo("/user", user);
+    // Create new user stuff:
+    const createUserButton = document.getElementById("createUserButton");
 
-        }
+    createUserButton.onclick = async function (e) {
 
-        async function postTo(url, data) {
-            const header = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            };
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const pswHash = document.getElementById("pswHash").value;
+        const user = { name, email, pswHash };
+        const respon = await postTo("/user", user);
+    }
 
+    async function postTo(url, data) {
+        const header = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        };
 
-            const response = await fetch(url, header);
-            return response;
-        }
+        const respon = await fetch(url, header);
 
-    </script>
-    
+        return respon;
+    }
+
+    // Get all users
+    //const usersContainer = document.getElementById('usersContainer');
+    //getUsers();
+
+    // function getUsersOOOOLD() {
+
+    //     let requestUrl = 'http://localhost:8080/user/';
+
+    //     fetch(requestUrl)
+    //         .then(function (response) {
+    //             if (response.ok) {
+    //                 return response.json();
+    //             }
+    //             throw new Error('Network response was not ok!');
+    //         })
+    //         .then(function (data) {
+    //             // Process the response data here
+    //             console.log('Processing data: ' + JSON.stringify(data));
+    //             let usersTable = document.createElement("table");
+    //             usersTable.id = 'usersTable';
+
+    //             // Create the table data
+    //             for (let element of data) {
+    //                 let row = usersTable.insertRow();
+    //                 for (key in element) {
+    //                     let cell = row.insertCell();
+    //                     let text = document.createTextNode(element[key]);
+    //                     cell.appendChild(text);
+    //                 }
+    //             }
+
+    //             // Create the table headings
+    //             let thead = usersTable.createTHead();
+    //             let row = thead.insertRow();
+    //             for (let key of Object.keys(data[0])) {
+    //                 let th = document.createElement("th");
+    //                 let text = document.createTextNode(key);
+    //                 th.appendChild(text);
+    //                 row.appendChild(th);
+    //             }
+    //             usersContainer.appendChild(usersTable);
+    //         })
+    //         .catch(function (error) {
+    //             // Handle errors here
+    //             console.log('An error occured!');
+    //         });
+    // }
+</script>
+  <script src="/js/app.js"></script>
 </body>
 
 </html>

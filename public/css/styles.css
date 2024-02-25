@@ -1,0 +1,333 @@
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Global properties */
+:root {
+  --color-text-body: #fff;
+  --color-text-muted: #9b9b9b;
+  --color-bg-body: #121212;
+  --color-bg-surface: #1e1e1e;
+  --color-bg-surface-hover: #1a1a1a;
+  --color-bg-success: #11302d;
+  --color-border: #1e1e1e;
+  --font-family-default: Arial, Helvetica, sans-serif
+}
+
+/* Enable smooth scrolling by default */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Remove default margin in favour of better control in authored CSS */
+body, h1, h2, h3, h4, p,
+figure, blockquote, dl, dd, ul, ol {
+  /* margin-block-end: 0; */
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core body defaults */
+body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  margin: 0;
+  line-height: 1.5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: var(--color-text-body);
+  background-color: var(--color-bg-body);
+}
+
+/* Set shorter line heights on headings and interactive elements */
+h1, h2, h3, h4,
+button, input, label {
+  line-height: 1.1;
+}
+
+/* Balance text wrapping on headings */
+h1, h2,
+h3, h4 {
+  text-wrap: balance;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input, button,
+textarea, select {
+  font: inherit;
+}
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+
+main {
+
+}
+
+/* Center main content */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+tr {
+  border-bottom: 1px solid var(--color-border);
+}
+th, td {
+  text-align: left;
+  padding: .75rem;
+}
+
+/* Header */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background-color: var(--color-bg-surface);
+}
+
+/* Menu */
+.site-menu {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* .site-menu a {
+
+} */
+
+/* Footer */
+.site-footer {
+  padding: 1.5rem 2rem;
+  background-color: var(--color-bg-surface);
+}
+
+/* Main scenes - show only the welcome scene by default - toggle with js */
+#welcomeScene {
+  display: block;
+}
+
+#gameScene {
+  display: block;
+}
+
+#gameOverScene {
+  display: block;
+}
+
+/* Icons sequence - For displaying the icon sequence*/
+
+.icon-sequence {
+  padding-top: 3rem;display: flex;justify-content: center;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12rem;
+  height: 12rem;
+  border: .25rem solid #1a1a1a;
+  border-radius: .5rem;
+  color: #cf6679;
+}
+
+/* Icon grid - Buttons to click when guessing order of icons */
+
+.icon-grid {
+  display: grid;
+  justify-content: center;
+  /* grid-template-columns: repeat( auto-fit, minmax(250px, 1fr) ); */
+  grid-template-columns: repeat( auto-fit, 112px );
+  gap: 1rem;
+}
+
+.icon-grid button {
+  display: inline-block;
+  border: none;
+  padding: 1.5rem;
+  margin: 0;
+  text-decoration: none;
+  background-color: var(--color-bg-surface);
+  color: #ffffff;
+  font-family: sans-serif;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  text-align: center;
+  border-radius: .5rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.icon-grid button:hover {
+  background-color: var(--color-bg-surface-hover);
+}
+
+.icon-grid button.correct {
+  background-color: var(--color-bg-success);
+}
+
+/* Layout */
+
+.container {
+  max-width: 1072px;
+  margin-inline: auto;
+  padding: 2rem 2rem;
+  border: 1px solid black;
+}
+
+/* Icons */
+
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -.125em;
+  fill: currentcolor;
+}
+
+.icon-2x {
+  font-size: 2rem;
+}
+
+.icon-3x {
+  font-size: 3rem;
+}
+
+.icon-4x {
+  font-size: 4rem;
+}
+
+.icon-5x {
+  font-size: 5rem;
+}
+
+.icon-6x {
+  font-size: 6rem;
+}
+
+/* Buttons */
+
+.big-button {
+  display: inline-block;
+  padding: 1rem 3rem;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 2px solid #cf6679;
+  background-color: #cf6679;
+  border-radius: 1rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.big-button:hover {
+  border-color: 2px #a65261;
+  background-color: #a65261;
+}
+
+.medium-button {
+  display: inline-block;
+  padding: .5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 2px solid #cf6679;
+  background-color: #cf6679;
+  border-radius: .5rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.medium-button:hover {
+  border-color: #a65261;
+  background-color: #a65261;
+}
+
+/* Form layout - stacked */
+
+.form-layout-stack {
+  --form-layout-stack-col-gap: 1.5rem;
+  --form-layout-stack-row-gap: .75rem;
+  display: grid;
+  align-items: center;
+  grid-template-columns: minmax(0, auto) minmax(50%, 1fr);
+  grid-auto-rows: min-content;
+  column-gap: var(--form-layout-stack-col-gap);
+  row-gap: var(--form-layout-stack-row-gap);
+}
+
+/* Utilities */
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-md {
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+
+.text-lg {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+  letter-spacing: .01em;
+}
+
+.text-center {
+  text-align: center;
+}
+

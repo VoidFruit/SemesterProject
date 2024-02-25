@@ -3,53 +3,87 @@ import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
 
+
+import DBManager from "../modules/storageManager.mjs";
+
 const USER_API = express.Router();
-USER_API.use(express.json());
+USER_API.use(express.json()); // This makes it so that express parses all incoming payloads as JSON for this route.
 
-// Assuming you have some data structure to store users
-let users = [];
+const users = [];
 
-function assignID(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let randomID = '';
+USER_API.get('/', async (req, res, next) => {
+    // SuperLogger.log("Demo of logging tool");
+    // SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
 
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        randomID += characters.charAt(randomIndex);
+    console.log("Get all users");    
+
+    let users = await DBManager.getUsers();
+
+    let usersArray = [];
+
+    if (users != null) {
+        users.forEach(element => {
+            console.log("User name " + element.name);
+            let user = new User();
+            user.id = element.id;
+            user.name = element.name;
+            user.email = element.email;
+
+            usersArray.push(user);
+
+        });
+        //res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
+        //res.send(users);
+        res.send(usersArray);
     }
+    else {
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Det gikk dritt. Dårlig med brukere i basen.").end();
+    }
+})
 
-    return randomID;
-}
+USER_API.get('/:id', async (req, res, next) => {
 
-USER_API.get('/', (req, res) => {
-    // Log users in console
-    console.log("Existing Users:");
-    console.log(users);
+    // Tip: All the information you need to get the id part of the request can be found in the documentation 
+    // https://expressjs.com/en/guide/routing.html (Route parameters)
 
-    res.status(HTTPCodes.SuccesfullRespons.Ok).json(users);
-});
+    /// TODO: 
+    // Return user object
 
-USER_API.get('/:id', (req, res) => {
     const userId = req.params.id;
-    const user = users.find(u => u.id === userId);
+    
+    if (userId != null) {
+        let user = new User();
+        user.id = userId;
+        user = await user.get();
 
-    if (user) {
-        res.status(HTTPCodes.SuccesfullRespons.Ok).json(user);
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound) ();
+        // DBManager returns user object with empty id if no match was found
+        if (user.id != "") {
+            console.log("usersRoute Get user: " + user.id + " " + user.name);
+            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+        }
+        else {
+            res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+            console.log("usersRoute Get user: No match!");
+        }                
     }
-});
+    else {
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("No user Id was provided!").end();
+    }
+})
 
-USER_API.post('/', (req, res, next) => {
-    console.log("Received request to create user:");
-    const { name, email, password, score, isAdmin} = req.body;
+USER_API.post('/', async (req, res, next) => {
+
+    // This is using javascript object destructuring.
+    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
+    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
+    const { name, email, password } = req.body;
+
+
     if (name != "" && email != "" && password != "") {
-        const user = new User(); 
+        let user = new User();
         user.name = name;
         user.email = email;
-        user.id = assignID(5);
-        user.score = score;
-        user.isAdmin = isAdmin;
+
         ///TODO: Do not save passwords.
         user.pswHash = password;
 
@@ -57,13 +91,9 @@ USER_API.post('/', (req, res, next) => {
         let exists = false;
 
         if (!exists) {
-            users.push(user);
-            res.status(HTTPCodes.SuccesfullRespons.Ok).end();
-            console.log("Added user:" + user.name);
-            users.forEach(element => {
-              console.log("Users array contains: " + element.name);
-            });
-
+            //TODO: What happens if this fails?
+            user = await user.save();
+            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
         } else {
             res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
         }
@@ -74,23 +104,16 @@ USER_API.post('/', (req, res, next) => {
 
 });
 
-USER_API.put('/:id', (req, res) => {
-    const userId = req.params.id;
-    const { name, pswHash } = req.body;
-
+USER_API.post('/:id', (req, res, next) => {
+    /// TODO: Edit user
+    const user = new User(); //TODO: The user info comes as part of the request 
+    user.save();
 });
 
 USER_API.delete('/:id', (req, res) => {
-    const userID = req.params.id;
-    const userIndex = users.findIndex(u => u.id === userID);
-
-    if (userIndex !== -1) {
-        // Remove user if found
-        users.splice(userIndex, 1);
-        res.status(HTTPCodes.SuccesfullRespons.Ok).end();
-    } else {
-        res.status(HTTPCodes.ClientSideErrorRespons.NotFound).end();
-    }
+    /// TODO: Delete user.
+    const user = new User(); //TODO: Actual user
+    user.delete();
 });
 
-export default USER_API;
+export default USER_API
