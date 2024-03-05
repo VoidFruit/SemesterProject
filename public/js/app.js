@@ -1,3 +1,4 @@
+import { GameManager } from './game-manager.js'
 // Game functions
 //const currentLevel = 1;
 //let score = 0;
@@ -7,6 +8,9 @@
 // const output = document.getElementById('Output');
 // output.innerHTML = 'Some text to try out';
 //getUser(246810);
+
+  const gameManager = new GameManager();
+  gameManager.initGameStates();
 
 
 

@@ -21,65 +21,43 @@
     <!-- Start: The welcome scene -->
     <div class="container" id="welcomeScene">
       <div class="text-center">
-        <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
         <h1 style="font-size: 6rem;">Game Title</h1>
         <p class="text-lg text-muted" style="margin-top: 1.5rem;">Challenge your brain!</p>
-        <button class="big-button" style="margin-top: 2.5rem;">Click to play</button>
+        <button id="startButton" class="big-button" style="margin-top: 2.5rem;">Click to play</button>
       </div>
     </div>
     <!-- End: The welcome scene -->
 
-    <!-- Start: The game scene-->
-    <div class="container" id="gameScene">
+    <!-- Start: The countdown scene -->
+    <div class="container hidden" id="countdownScene">
       <div class="text-center" style="padding-top: 3rem;">
-        <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
-        <h1 id="mainTitle" style="font-size: 6rem;">Get Ready!!</h1>
+        <h1 style="font-size: 6rem;">Get Ready!</h1>
+        <h2 id="countdownNumber" style="font-size: 3rem; padding-top: 6rem;">3</h2>
+      </div>
+    </div>
+    <!-- End: the countodown scene -->
+
+    <!-- Start: The game scene-->
+    <div class="container hidden" id="gameScene">
+      <div class="text-center" style="padding-top: 3rem;">
+        <p class="text-md text-muted text-uppercase" id="levelTitle" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
         <p id="subTitle" class="text-lg text-muted" style="margin-top: 1.5rem;">Memorize the icon sequence.</p>
       </div>
       <!-- Start: The icon sequence display -->
-      <div class="icon-sequence">
+      <div class="icon-sequence hidden"> 
         <div id="iconContainer" class="icon-container">
-          <svg class="icon icon-6x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#chat-dots-fill"/>
+          <svg id="icon" class="icon icon-6x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#heart-fill"/>
           </svg>
         </div>
       </div>
       <!-- End: The icon sequence display -->
+
       <!-- Start: The icon button grid - for guessing -->
-      <div class="icon-grid" style="margin-top: 3rem;">
+      <div class="icon-grid" id="inputScene" style="margin-top: 3rem;">
         <button>
           <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
             <use xlink:href="/icons/bootstrap-icons.svg#chat-right-quote"/>
-          </svg>
-        </button>
-        <button>
-          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#circle-fill"/>
-          </svg>
-        </button>
-        <button>
-          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#cloud-drizzle-fill"/>
-          </svg>
-        </button>
-        <button>
-          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#coin"/>
-          </svg>
-        </button>
-        <button>
-          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#credit-card-fill"/>
-          </svg>
-        </button>
-        <button>
-          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#cloud-drizzle-fill"/>
-          </svg>
-        </button>
-        <button class="correct">
-          <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#coin"/>
           </svg>
         </button>
       </div>
@@ -88,12 +66,12 @@
     <!-- End: The game scene -->
 
     <!-- Start: The game over scene -->
-    <div class="container" id="gameOverScene">
+    <div class="container hidden" id="gameOverScene">
       <div class="text-center">
         <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
         <h1 style="font-size: 6rem;">Game Over</h1>
-        <p class="text-lg text-muted" style="margin-top: 1.5rem;">Lorem ipsum dolor sit amet</p>
-        <button class="big-button" style="margin-top: 2.5rem;">Try again</button>
+        <p class="text-lg text-muted" style="margin-top: 1.5rem;">incorrect order!</p>
+        <button class="big-button" id="restartButton" style="margin-top: 2.5rem;">Try again</button>
       </div>
       <table>
         <thead>
@@ -125,7 +103,7 @@
     <!-- End: The game over scene -->
 
     <!-- Start: Create user form -->
-    <div class="container" id="userFormContainer">
+    <div class="container hidden" id="userFormContainer">
       <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
       <div class="form-layout-stack" style="max-width: 500px;margin-bottom: 1.5rem;">
         <label>Name :</label><input type="text" id="name">
@@ -137,7 +115,7 @@
     <!-- End: Create user form -->
 
     <!-- Start: List all users -->
-    <div class="container" id="usersContainer"><h2 style="margin-bottom: 1.5rem;">All Users</h2></div>
+    <div class="container hidden" id="usersContainer"><h2 style="margin-bottom: 1.5rem;">All Users</h2></div>
     <!-- End: List all users -->
   </main>
   <footer class="site-footer">
@@ -171,55 +149,8 @@
         return respon;
     }
 
-    // Get all users
-    //const usersContainer = document.getElementById('usersContainer');
-    //getUsers();
-
-    // function getUsersOOOOLD() {
-
-    //     let requestUrl = 'http://localhost:8080/user/';
-
-    //     fetch(requestUrl)
-    //         .then(function (response) {
-    //             if (response.ok) {
-    //                 return response.json();
-    //             }
-    //             throw new Error('Network response was not ok!');
-    //         })
-    //         .then(function (data) {
-    //             // Process the response data here
-    //             console.log('Processing data: ' + JSON.stringify(data));
-    //             let usersTable = document.createElement("table");
-    //             usersTable.id = 'usersTable';
-
-    //             // Create the table data
-    //             for (let element of data) {
-    //                 let row = usersTable.insertRow();
-    //                 for (key in element) {
-    //                     let cell = row.insertCell();
-    //                     let text = document.createTextNode(element[key]);
-    //                     cell.appendChild(text);
-    //                 }
-    //             }
-
-    //             // Create the table headings
-    //             let thead = usersTable.createTHead();
-    //             let row = thead.insertRow();
-    //             for (let key of Object.keys(data[0])) {
-    //                 let th = document.createElement("th");
-    //                 let text = document.createTextNode(key);
-    //                 th.appendChild(text);
-    //                 row.appendChild(th);
-    //             }
-    //             usersContainer.appendChild(usersTable);
-    //         })
-    //         .catch(function (error) {
-    //             // Handle errors here
-    //             console.log('An error occured!');
-    //         });
-    // }
 </script>
-  <script src="/js/app.js"></script>
+  <script type="module" src="/js/app.js"></script>
 </body>
 
 </html>

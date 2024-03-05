@@ -12,6 +12,8 @@
   --color-bg-body: #121212;
   --color-bg-surface: #1e1e1e;
   --color-bg-surface-hover: #1a1a1a;
+  --color-bg-surface-click: #1F1F1F; /* visualizes button click */
+  --color-bg-surface-pressed: #141414; /* visualizes that a button has already been pressed */
   --color-bg-success: #11302d;
   --color-border: #1e1e1e;
   --font-family-default: Arial, Helvetica, sans-serif
@@ -139,7 +141,11 @@ th, td {
   background-color: var(--color-bg-surface);
 }
 
-/* Main scenes - show only the welcome scene by default - toggle with js */
+/* class for hiding the different gamestates */
+.hidden {
+  display: none !important;
+}
+
 #welcomeScene {
   display: block;
 }
@@ -164,8 +170,6 @@ th, td {
   justify-content: center;
   width: 12rem;
   height: 12rem;
-  border: .25rem solid #1a1a1a;
-  border-radius: .5rem;
   color: #cf6679;
 }
 
@@ -200,17 +204,26 @@ th, td {
   background-color: var(--color-bg-surface-hover);
 }
 
+.icon-grid button.click {
+  background-color: var(--color-bg-surface-click);
+}
+
+.icon-grid button.pressed {
+  background-color: var(--color-bg-surface-pressed);
+}
+
 .icon-grid button.correct {
   background-color: var(--color-bg-success);
 }
 
 /* Layout */
 
+
 .container {
   max-width: 1072px;
+  min-height: 100vh;
   margin-inline: auto;
   padding: 2rem 2rem;
-  border: 1px solid black;
 }
 
 /* Icons */
