@@ -13,7 +13,7 @@ export class GameManager {
     this.iconSequence = [];
     this.playerSequence = [];
     this.iconDisplay = document.getElementById('icon');
-    this.icons = ['alarm-fill', 'heart-fill', 'airplane-fill', 'balloon-fill', 'battery-half', 'bicycle', 'book-fill', 'brilliance', 'bug-fill', 'camera-fill', 'capsule', 'clock-fill', 'arrow-through-heart-fill', 'cloud-drizzle-fill', 'compass-fill', 'dice-5-fill', 'dpad-fill', 'droplet-fill', 'egg-fill', 'eye-fill', 'feather', 'gear-fill', 'gift-fill', 'globe2', 'headphone', 'heart-fill', 'house-door-fill', 'lamp-fill', 'incognito', 'lightning-charge-fill', 'link', 'rocket-takeoff-fill', 'send-fill', 'shield-shaded', 'snow', 'speaker-fill', 'star-fill', 'suit-club-fill', 'suit-diamond-fill', 'suit-spade-fill', 'telephone-fill', 'tree-fill']; //icon pool
+    this.icons = ['alarm-fill', 'heart-fill', 'airplane-fill', 'balloon-fill', 'battery-half', 'bicycle', 'book-fill', 'brilliance', 'bug-fill', 'camera-fill', 'capsule', 'clock-fill', 'arrow-through-heart-fill', 'cloud-drizzle-fill', 'compass-fill', 'dice-5-fill', 'dpad-fill', 'droplet-fill', 'egg-fill', 'eye-fill', 'feather', 'gear-fill', 'gift-fill', 'globe2', 'headphones', 'heart-fill', 'house-door-fill', 'lamp-fill', 'incognito', 'lightning-charge-fill', 'link', 'rocket-takeoff-fill', 'send-fill', 'shield-shaded', 'snow', 'speaker-fill', 'star-fill', 'suit-club-fill', 'suit-diamond-fill', 'suit-spade-fill', 'telephone-fill', 'tree-fill']; //icon pool
   }
   //toggle the different container classes in index.html
   toggleGameState(newState) {
@@ -147,7 +147,7 @@ export class GameManager {
     shuffledSequence.forEach((iconName) => {
       const button = document.createElement('button');
       button.classList.add('icon-grid');
-      button.innerHTML = `<svg class="icon" width="50" height="50"><use xlink:href="./icons/bootstrap-icons.svg#${iconName}"></use></svg>`;
+      button.innerHTML = `<svg class="icon icon-4x" width="50" height="50"><use xlink:href="./icons/bootstrap-icons.svg#${iconName}"></use></svg>`;
       button.addEventListener('click', () => {
         this.handlePlayerInput(iconName);
       });
