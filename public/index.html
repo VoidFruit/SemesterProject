@@ -73,83 +73,39 @@
         <p class="text-lg text-muted" style="margin-top: 1.5rem;">incorrect order!</p>
         <button class="big-button" id="restartButton" style="margin-top: 2.5rem;">Try again</button>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th scope="col">Username</th>
-            <th scope="col">Hiscore</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>400</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Mark</td>
-            <td>200</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Mark</td>
-            <td>100</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <!-- End: The game over scene -->
-
-    <!-- Start: Create user form -->
-    <div class="container hidden" id="userFormContainer">
-      <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
-      <div class="form-layout-stack" style="max-width: 500px;margin-bottom: 1.5rem;">
-        <label>Name :</label><input type="text" id="name">
-        <label for="">Email:</label><input type="email" id="email">
-        <label for="">Password:</label><input type="password" id="pswHash">
+      <div id="highscoresContainer" style="margin-top: 2.5rem;">
+        <h2 style="margin-bottom: 1.5rem;">Highscores</h2>
       </div>
-      <button class="medium-button" id="createUserButton">Create User</button>
     </div>
-    <!-- End: Create user form -->
+
+    <!-- End: The game over scene -->
 
     <!-- Start: List all users -->
     <div class="container hidden" id="usersContainer"><h2 style="margin-bottom: 1.5rem;">All Users</h2></div>
     <!-- End: List all users -->
+  <!-- Start: Create user form -->
+  <div class="container hidden" id="userFormContainer">
+    <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
+    <div class="form-layout-stack" style="max-width: 400px;margin-bottom: 1rem;">
+      <label for="name">Name:</label><input type="text" id="name">
+      <label for="email">Email:</label><input type="email" id="email">
+      <label for="pswHash">Password:</label><input type="password" id="pswHash">
+    </div>
+    <div style="margin-bottom: 1rem;">
+      <label for="isAdmin">
+        <input type="checkbox" name="checkbox" id="isAdmin" />
+        Is administrator
+      </label>
+    </div>
+    <button class="medium-button" id="createUserButton">Create User</button>
+  </div>
+  <!-- End: Create user form -->
+ 
   </main>
   <footer class="site-footer">
     The footer <p id="Output"></p>
   </footer>
-  <script>
-
-    // Create new user stuff:
-    const createUserButton = document.getElementById("createUserButton");
-
-    createUserButton.onclick = async function (e) {
-
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const pswHash = document.getElementById("pswHash").value;
-        const user = { name, email, pswHash };
-        const respon = await postTo("/user", user);
-    }
-
-    async function postTo(url, data) {
-        const header = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        };
-
-        const respon = await fetch(url, header);
-
-        return respon;
-    }
-
-</script>
+ 
   <script type="module" src="/js/app.js"></script>
 </body>
 
