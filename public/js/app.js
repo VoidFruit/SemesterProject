@@ -45,7 +45,6 @@ updateHighScore(150, 82);
 //---------------------------------------------------------------------------------------------------
 
 // Get all users (Creates an HTML table with all users in the database)
-// Get all users (Creates an HTML table with all users in the database)
 async function getUsers() {
 
   const requestUrl = 'http://localhost:8080/user/';
@@ -329,12 +328,8 @@ async function getHighscores() {
                     let text = document.createTextNode(element[key]);
                     cell.appendChild(text);
                   }
-                  if (key == "email") {
-                    let cell = row.insertCell();
-                    let text = document.createTextNode(element[key]);
-                    cell.appendChild(text);
-                  }
-                  else if (key == "highscore") {
+
+                  if (key == "highscore") {
                     let cell = row.insertCell();
                     let text = document.createTextNode(element[key]);
                     cell.appendChild(text);
@@ -352,13 +347,7 @@ async function getHighscores() {
               th.appendChild(text);
               row.appendChild(th);
             }
-            if (key == "email") {
-              let th = document.createElement("th");
-              let text = document.createTextNode(key);
-              th.appendChild(text);
-              row.appendChild(th);
-            }
-            else if (key == "highscore") {
+            if (key == "highscore") {
               let th = document.createElement("th");
               let text = document.createTextNode(key);
               th.appendChild(text);

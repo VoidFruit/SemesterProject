@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My app</title>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body>
   <header class="site-header">
     <a href="/">The logo</a>
@@ -40,14 +42,15 @@
     <!-- Start: The game scene-->
     <div class="container hidden" id="gameScene">
       <div class="text-center" style="padding-top: 3rem;">
-        <p class="text-md text-muted text-uppercase" id="levelTitle" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
+        <p class="text-md text-muted text-uppercase" id="levelTitle" style="margin-bottom: 1.5rem;color: #03dac5;">Level
+          1</p>
         <p id="subTitle" class="text-lg text-muted" style="margin-top: 1.5rem;">Memorize the icon sequence.</p>
       </div>
       <!-- Start: The icon sequence display -->
-      <div class="icon-sequence hidden"> 
+      <div class="icon-sequence hidden">
         <div id="iconContainer" class="icon-container">
           <svg id="icon" class="icon icon-6x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#heart-fill"/>
+            <use xlink:href="/icons/bootstrap-icons.svg#heart-fill" />
           </svg>
         </div>
       </div>
@@ -57,7 +60,7 @@
       <div class="icon-grid" id="inputScene" style="margin-top: 3rem;">
         <button>
           <svg class="icon icon-4x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#chat-right-quote"/>
+            <use xlink:href="/icons/bootstrap-icons.svg#chat-right-quote" />
           </svg>
         </button>
       </div>
@@ -73,39 +76,43 @@
         <p class="text-lg text-muted" style="margin-top: 1.5rem;">incorrect order!</p>
         <button class="big-button" id="restartButton" style="margin-top: 2.5rem;">Try again</button>
       </div>
+      <!-- Start: highscores -->
       <div id="highscoresContainer" style="margin-top: 2.5rem;">
         <h2 style="margin-bottom: 1.5rem;">Highscores</h2>
       </div>
+      <!-- End: highscores -->
     </div>
-
     <!-- End: The game over scene -->
 
     <!-- Start: List all users -->
-    <div class="container hidden" id="usersContainer"><h2 style="margin-bottom: 1.5rem;">All Users</h2></div>
+    <div class="container" id="usersContainer">
+      <h2 style="margin-bottom: 1.5rem;">All Users</h2>
+    </div>
     <!-- End: List all users -->
-  <!-- Start: Create user form -->
-  <div class="container hidden" id="userFormContainer">
-    <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
-    <div class="form-layout-stack" style="max-width: 400px;margin-bottom: 1rem;">
-      <label for="name">Name:</label><input type="text" id="name">
-      <label for="email">Email:</label><input type="email" id="email">
-      <label for="pswHash">Password:</label><input type="password" id="pswHash">
+
+    <!-- Start: Create user form -->
+    <div class="container" id="userFormContainer">
+      <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
+      <div class="form-layout-stack" style="max-width: 400px;margin-bottom: 1rem;">
+        <label for="name">Name:</label><input type="text" id="name">
+        <label for="email">Email:</label><input type="email" id="email">
+        <label for="pswHash">Password:</label><input type="password" id="pswHash">
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label for="isAdmin">
+          <input type="checkbox" name="checkbox" id="isAdmin" />
+          Is administrator
+        </label>
+      </div>
+      <button class="medium-button" id="createUserButton">Create User</button>
     </div>
-    <div style="margin-bottom: 1rem;">
-      <label for="isAdmin">
-        <input type="checkbox" name="checkbox" id="isAdmin" />
-        Is administrator
-      </label>
-    </div>
-    <button class="medium-button" id="createUserButton">Create User</button>
-  </div>
-  <!-- End: Create user form -->
- 
+    <!-- End: Create user form -->
+
   </main>
   <footer class="site-footer">
     The footer <p id="Output"></p>
   </footer>
- 
+
   <script type="module" src="/js/app.js"></script>
 </body>
 

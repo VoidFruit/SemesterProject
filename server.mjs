@@ -20,8 +20,8 @@ server.set('port', port);
 const logger = new SuperLogger();
 server.use(logger.createAutoHTTPRequestLogger()); // Will logg all http method requests
 
-// Add basic authentication
-server.use(authentication);
+// // Add basic authentication
+// server.use(authentication);
 
 // Defining a folder that will contain static files.
 server.use(express.static('public'));
