@@ -183,7 +183,7 @@ function getUser(userId) {
 
   if (userId != '') {
 
-    const requestUrl = '/user'; + userId;
+    const requestUrl = '/user/'; + userId;
 
     fetch(requestUrl)
       .then(function (response) {
@@ -225,7 +225,7 @@ async function createUser(url, data) {
 // Update user
 async function updateUser(userId) {
 
-  const url = '/user'; + userId;
+  const url = '/user/'; + userId;
 
   // Get the inputs from the users table
   const name = document.getElementById(userId + "name").value;
@@ -365,7 +365,7 @@ async function getHighscores() {
 
 // Set new highscore for user
 async function setUserHighscore(userId, data) {
-  const url = '/user'; + userId;
+  const url = '/user/'; + userId;
 
   fetch(url, {
       method: 'PATCH',

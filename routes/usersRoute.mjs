@@ -12,8 +12,6 @@ USER_API.use(express.json()); // This makes it so that express parses all incomi
 const users = [];
 
 USER_API.get('/', async (req, res, next) => {
-    // SuperLogger.log("Demo of logging tool");
-    // SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
 
     console.log("Get all users");    
 

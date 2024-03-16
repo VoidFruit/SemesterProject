@@ -231,7 +231,7 @@ export class GameManager {
     }
 
     async getHighscores() {
-      const requestUrl = 'http://localhost:8080/user/';
+      const requestUrl = '/user';
     
       try {
         const response = await fetch(requestUrl);
@@ -286,7 +286,7 @@ export class GameManager {
   
   // New method to update the highscore for a specific user
   async setUserHighscore(userId, data) {
-    const url = 'http://localhost:8080/user/' + userId;
+    const url = '/user/' + userId;
   
     try {
       const response = await fetch(url, {
