@@ -265,14 +265,14 @@ class DBManager {
 // 1:
 let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
-// 2:
-connectionString = process.env.DB_CONNECTIONSTRING_LOCAL;
-if (process.env.ENVIORMENT != "local") {
-    connectionString = process.env.DB_CONNECTIONSTRING_PROD;
-}
+// // 2:
+// connectionString = process.env.DB_CONNECTIONSTRING_LOCAL;
+// if (process.env.ENVIORMENT != "local") {
+//     connectionString = process.env.DB_CONNECTIONSTRING_PROD;
+// }
 
-//3:
-connectionString = process.env["DB_CONNECTIONSTRING_" + process.env.ENVIORMENT.toUpperCase()];
+// //3:
+// connectionString = process.env["DB_CONNECTIONSTRING_" + process.env.ENVIRONMENT.toUpperCase()]; 
 
 
 // We are using an enviorment variable to get the db credentials
