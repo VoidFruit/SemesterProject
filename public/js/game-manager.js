@@ -34,6 +34,7 @@ export class GameManager {
       console.log("start button clicked");
       // Switch to the countdown scene first
       this.toggleGameState('countdownScene');
+      
 
       // Perform the countdown
       let countdownValue = 3;
