@@ -255,25 +255,7 @@ class DBManager {
 
 }
 
-
-
-
-// The following is thre examples of how to get the db connection string from the enviorment variables.
-// They accomplish the same thing but in different ways.
-// It is a judgment call which one is the best. But go for the one you understand the best.
-
-// 1:
-let connectionString = process.env.ENVIORMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
-
-// // 2:
-// connectionString = process.env.DB_CONNECTIONSTRING_LOCAL;
-// if (process.env.ENVIORMENT != "local") {
-//     connectionString = process.env.DB_CONNECTIONSTRING_PROD;
-// }
-
-// //3:
-// connectionString = process.env["DB_CONNECTIONSTRING_" + process.env.ENVIRONMENT.toUpperCase()]; 
-
+let connectionString = process.env.ENVIRONMENT == "local" ? process.env.DB_CONNECTIONSTRING_LOCAL : process.env.DB_CONNECTIONSTRING_PROD;
 
 // We are using an enviorment variable to get the db credentials
 if (connectionString == undefined) {
