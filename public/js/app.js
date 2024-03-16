@@ -47,7 +47,7 @@ updateHighScore(150, 82);
 // Get all users (Creates an HTML table with all users in the database)
 async function getUsers() {
  
-  const requestUrl = 'http://localhost:8080/user/';
+  const requestUrl = 'https://semesterproject.onrender.com/user/';
 
   fetch(requestUrl)
       .then(function (response) {
@@ -183,7 +183,7 @@ function getUser(userId) {
 
   if (userId != '') {
 
-    let requestUrl = 'http://localhost:8080/user/' + userId;
+    let requestUrl = 'https://semesterproject.onrender.com/user/' + userId;
 
     fetch(requestUrl)
       .then(function (response) {
@@ -225,7 +225,7 @@ async function createUser(url, data) {
 // Update user
 async function updateUser(userId) {
 
-  const url = 'http://localhost:8080/user/' + userId;
+  const url = 'https://semesterproject.onrender.com/user/' + userId;
 
   // Get the inputs from the users table
   const name = document.getElementById(userId + "name").value;
@@ -263,7 +263,7 @@ async function updateUser(userId) {
 // Delete user
 async function deleteUser(userId) {
   console.log("Inside delete user function");
-  const url = 'http://localhost:8080/user/' + userId;
+  const url = 'https://semesterproject.onrender.com/user/' + userId;
 
   fetch(url, {
       method: 'DELETE', // Specify the HTTP method
@@ -293,7 +293,7 @@ async function deleteUser(userId) {
 
 async function getHighscores() {
 
-  const requestUrl = 'http://localhost:8080/user/';
+  const requestUrl = 'https://semesterproject.onrender.com/user/';
 
   fetch(requestUrl)
       .then(function (response) {
@@ -365,7 +365,7 @@ async function getHighscores() {
 
 // Set new highscore for user
 async function setUserHighscore(userId, data) {
-  const url = 'http://localhost:8080/user/' + userId;
+  const url = 'https://semesterproject.onrender.com/user/' + userId;
 
   fetch(url, {
       method: 'PATCH',
