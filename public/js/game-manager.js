@@ -63,19 +63,29 @@ export class GameManager {
 
   // Generate a random sequence of icons.
   runIconSequence() {
-    //update the level
+    // Update the level
     this.updateLevelDisplay();
-    // clear the player response input buttons before displaying the next sequence.
+    
+    // Clear the player response input buttons before displaying the next sequence.
     const inputScene = document.querySelector('#inputScene');
     inputScene.innerHTML = '';
+    
     this.iconSequence = [];
+    const availableIcons = [...this.icons]; // Create a copy of the icons array
+    
+    // Select 'currentLevel' unique icons for the sequence
     for (let i = 0; i < this.currentLevel; i++) {
-      const randomIndex = Math.floor(Math.random() * this.icons.length);
-      this.iconSequence.push(this.icons[randomIndex]);
+      // Randomly select an index from the availableIcons array
+      const randomIndex = Math.floor(Math.random() * availableIcons.length);
+      // Add the selected icon to the sequence
+      this.iconSequence.push(availableIcons[randomIndex]);
+      // Remove the selected icon from the available icons pool
+      availableIcons.splice(randomIndex, 1);
     }
+    
     this.updateSubtitle('Memorize the icon sequence.');
     this.displayIconSequence();
-    console.log("running icon sequence!")
+    console.log("running icon sequence!");
   }
 
   // fetch('/api/sounds')
@@ -218,47 +228,46 @@ export class GameManager {
       });
       this.restartButtonClickListenerAdded = true; // Mark that the listener was added
     }
-  
 
     async getHighscores() {
       const requestUrl = 'http://localhost:8080/user/';
-  
+    
       try {
         const response = await fetch(requestUrl);
         if (!response.ok) {
           throw new Error('Network response was not ok!');
         }
         const data = await response.json();
-  
+    
         // Process the response data here
         // First, remove table if it already exists in the DOM
         const highscoreTableOld = document.getElementById('highscoresTable');
         if (highscoreTableOld != null) {
           highscoreTableOld.remove();
         }
-  
+    
         // Create the table element
         let highscoresTable = document.createElement("table");
         highscoresTable.id = 'highscoresTable';
-  
+    
         // Sort the array by highscores in descending order
-        data.sort((a, b) => b.highscore - a.highscore);
-  
+        data.sort((a, b) => b.score - a.score);
+    
         // Create the table cells
         for (let element of data) {
           let row = highscoresTable.insertRow();
-          let keys = ["name", "email", "score"]; // Add "score" to the keys array
+          let keys = ["rank", "name", "score"]; // Update keys to include "rank"
           keys.forEach(key => {
             let cell = row.insertCell();
             let text = document.createTextNode(element[key]);
             cell.appendChild(text);
           });
         }
-  
+    
         // Create the table headings
         let thead = highscoresTable.createTHead();
         let row = thead.insertRow();
-        let keys = ["name", "email", "score"]; // Add "score" to the keys array
+        let keys = ["rank", "name", "score"]; // Update keys to include "rank"
         keys.forEach(key => {
           let th = document.createElement("th");
           let text = document.createTextNode(key.charAt(0).toUpperCase() + key.slice(1)); // Capitalize the first letter of the key
@@ -266,35 +275,38 @@ export class GameManager {
           row.appendChild(th);
         });
         // Insert the table in the DOM
-        highscoresContainer.appendChild(highscoresTable);
+        const highscoresContainer = document.getElementById('highscoresContainer'); // Add this line
+        highscoresContainer.appendChild(highscoresTable); // Update this line
       } catch (error) {
         // Handle errors here
         console.log('An error occurred!', error);
       }
-    }
+  }
   
-    async setUserHighscore(userId, data) {
-      const url = 'http://localhost:8080/user/' + userId;
+  // New method to update the highscore for a specific user
+  async setUserHighscore(userId, data) {
+    const url = 'http://localhost:8080/user/' + userId;
   
-      try {
-        const response = await fetch(url, {
-          method: 'PATCH',
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+    try {
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
   
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-  
-        const responseData = await response.json();
-        console.log('Item updated successfully:', responseData);
-      } catch (error) {
-        console.error('Error updating item:', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+  
+      const responseData = await response.json();
+      console.log('Item updated successfully:', responseData);
+    } catch (error) {
+      console.error('Error updating item:', error);
     }
+  }
+
 
   GameOverScreen() {
     const levelDisplay = this.gameOver.querySelector('.text-md');
@@ -305,18 +317,9 @@ export class GameManager {
     if (gameOverMessage) {
       gameOverMessage.textContent = `You reached Level ${this.currentLevel}!`;
     }
-    // Function to get the current user's ID
-    const userId = getCurrentUserId(); 
-    const currentHighscore = getCurrentUserHighscore(); // Function to get the current user's high score
-  
-    const newScore = this.currentLevel; //current level represents the score
-  
-    if (newScore > currentHighscore) {
-      // Update the high score only if the new score is greater than the current high score
-      const userData = { highscore: newScore }; // Prepare the updated user data
-      this.setUserHighscore(userId, userData); // Update the user's high score
-    }
-    this.getHighscores() // Get highscores to populate the score column of the highscores table
+
+    // const newScore = this.currentLevel; //current level represents the score
+    this.getHighscores();
     this.toggleGameState('gameOverScene');
   }
 }

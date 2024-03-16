@@ -9,6 +9,7 @@ class User {
       this.name;
       this.id;
       this.score;
+      this.rank;
       this.isAdmin;
     }
   

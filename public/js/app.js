@@ -46,7 +46,7 @@ updateHighScore(150, 82);
 
 // Get all users (Creates an HTML table with all users in the database)
 async function getUsers() {
-
+ 
   const requestUrl = 'http://localhost:8080/user/';
 
   fetch(requestUrl)
