@@ -373,7 +373,7 @@ export async function registerUser(url, data) {
 
 // Login
 export async function loginUser(data) {
-  const url = '/user/login';
+  const url = '/user/';
 
   fetch(url, {
     method: 'POST',
