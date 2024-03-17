@@ -408,7 +408,7 @@ export async function loginUser(data) {
     localStorage.setItem("isadmin", data.isadmin);
 
     // Force a page reload so that local storage can be checked again
-    // window.location.reload();
+    window.location.reload();
     //window.location.reload(true);
   })
   .catch((error) => {
