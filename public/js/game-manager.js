@@ -11,8 +11,8 @@ export class GameManager {
     this.mainTitle = document.getElementById('mainTitle');
     this.subTitle = document.getElementById('subTitle');
     this.gameOver = document.getElementById('gameOverScene');
-    this.iconContainer = document.getElementById('iconContainer'); // The div containing the svg icons in the sequence
-    this.inputScene = document.getElementById('inputScene'); // The div containing the buttons to press when guessing
+    this.iconContainer = document.getElementById('iconContainer'); 
+    this.inputScene = document.getElementById('inputScene'); 
     this.currentLevel = 2;
     this.iconSequence = [];
     this.playerSequence = [];
@@ -102,10 +102,7 @@ export class GameManager {
         const newIconHref = `./icons/bootstrap-icons.svg#${iconName}`;
         const useElement = this.iconContainer.querySelector('use');
         if (useElement) {
-          useElement.setAttribute('href', newIconHref); // Modern browsers
-          // if (this.sounds[iconName]) {
-          //   this.sounds[iconName].play();
-          // }
+          useElement.setAttribute('href', newIconHref);
         } else {
           console.error('Use element not found');
         }
@@ -230,7 +227,7 @@ export class GameManager {
     //current level represents the score
     const newScore = this.currentLevel;
 
-    // New highscore?
+    // New highscore
     if (this.userHighscore && this.userId) {
       console.log('user is ' + this.userId);
       console.log('highscore is ' + this.userHighscore);
