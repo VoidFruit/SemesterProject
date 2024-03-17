@@ -12,8 +12,6 @@
   --color-bg-body: #121212;
   --color-bg-surface: #1e1e1e;
   --color-bg-surface-hover: #1a1a1a;
-  --color-bg-surface-click: #1F1F1F; /* visualizes button click */
-  --color-bg-surface-pressed: #141414; /* visualizes that a button has already been pressed */
   --color-bg-success: #11302d;
   --color-border: #1e1e1e;
   --font-family-default: Arial, Helvetica, sans-serif
@@ -89,6 +87,24 @@ textarea, select {
   font: inherit;
 }
 
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: .25rem .5rem;
+  color: var(--color-text-body);
+  appearance: none;
+  border: 1px solid var(--color-bg-surface);
+  background-color: var(--color-bg-surface);
+  background-clip: padding-box;
+  border-radius: .25rem;
+}
+
+input[readonly] {
+  background-color: var(--color-bg-body);
+  border-color: var(--color-bg-body);
+}
+
 /* Make sure textareas without a rows attribute are not tiny */
 textarea:not([rows]) {
   min-height: 10em;
@@ -131,6 +147,10 @@ th, td {
   gap: 1.5rem;
 }
 
+.site-menu a {
+  color: var(--color-text-body);
+}
+
 /* .site-menu a {
 
 } */
@@ -146,6 +166,7 @@ th, td {
   display: none !important;
 }
 
+/* Main scenes - show only the welcome scene by default - toggle with js */
 #welcomeScene {
   display: block;
 }
@@ -170,6 +191,8 @@ th, td {
   justify-content: center;
   width: 12rem;
   height: 12rem;
+  border: .25rem solid #1a1a1a;
+  border-radius: .5rem;
   color: #cf6679;
 }
 
@@ -218,12 +241,11 @@ th, td {
 
 /* Layout */
 
-
 .container {
   max-width: 1072px;
-  min-height: 100vh;
   margin-inline: auto;
   padding: 2rem 2rem;
+  border: 1px solid black;
 }
 
 /* Icons */
@@ -277,11 +299,6 @@ th, td {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.big-button:hover {
-  border-color: 2px #a65261;
-  background-color: #a65261;
-}
-
 .medium-button {
   display: inline-block;
   padding: .5rem 1rem;
@@ -301,9 +318,44 @@ th, td {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.medium-button:hover {
+.small-button {
+  display: inline-block;
+  padding: .0625rem .375rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  user-select: none;
+  border: 2px solid #cf6679;
+  background-color: #cf6679;
+  border-radius: .25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.big-button:hover,
+.medium-button:hover,
+.small-button:hover {
   border-color: #a65261;
   background-color: #a65261;
+}
+
+.big-button.secondary,
+.medium-button.secondary,
+.small-button.secondary {
+  border-color: var(--color-bg-body);
+  background-color: var(--color-bg-body);
+}
+
+.big-button.secondary:hover,
+.medium-button.secondary:hover,
+.small-button.secondary:hover {
+  border-color: var(--color-bg-surface);
+  background-color: var(--color-bg-surface);
 }
 
 /* Form layout - stacked */
@@ -344,3 +396,18 @@ th, td {
   text-align: center;
 }
 
+.ml-1 {
+  margin-left: .25rem;
+}
+
+.ml-2 {
+  margin-left: .5rem;
+}
+
+/* Adjust user table appearance */
+#usersTable tr td {
+  padding: .5rem;
+}
+#usersTable tr td:last-child {
+  white-space: nowrap;
+}

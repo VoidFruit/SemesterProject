@@ -2,8 +2,7 @@ import express from "express";
 import User from "../modules/user.mjs";
 import { HTTPCodes } from "../modules/httpConstants.mjs";
 import SuperLogger from "../modules/SuperLogger.mjs";
-
-
+import bcrypt from "bcrypt";
 import DBManager from "../modules/storageManager.mjs";
 
 const USER_API = express.Router();
@@ -11,9 +10,11 @@ USER_API.use(express.json()); // This makes it so that express parses all incomi
 
 const users = [];
 
+// Get all users
 USER_API.get('/', async (req, res, next) => {
-
-    console.log("Get all users");    
+    // SuperLogger.log("Demo of logging tool");
+    // SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
+    //console.log("Get all users");
 
     let users = await DBManager.getUsers();
 
@@ -21,14 +22,15 @@ USER_API.get('/', async (req, res, next) => {
 
     if (users != null) {
         users.forEach(element => {
-            console.log("User name " + element.name);
+            //console.log("User name " + element.name);
             let user = new User();
             user.id = element.id;
             user.name = element.name;
             user.email = element.email;
-
+            user.pswHash = element.password;
+            user.isAdmin = element.isadmin;
+            user.highscore = element.highscore;
             usersArray.push(user);
-
         });
         //res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
         //res.send(users);
@@ -39,16 +41,14 @@ USER_API.get('/', async (req, res, next) => {
     }
 })
 
+// Get user
 USER_API.get('/:id', async (req, res, next) => {
 
-    // Tip: All the information you need to get the id part of the request can be found in the documentation 
+    // Tip: All the information you need to get the id part of the request can be found in the documentation
     // https://expressjs.com/en/guide/routing.html (Route parameters)
 
-    /// TODO: 
-    // Return user object
-
     const userId = req.params.id;
-    
+
     if (userId != null) {
         let user = new User();
         user.id = userId;
@@ -57,36 +57,42 @@ USER_API.get('/:id', async (req, res, next) => {
         // DBManager returns user object with empty id if no match was found
         if (user.id != "") {
             console.log("usersRoute Get user: " + user.id + " " + user.name);
-            res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+            res.status(HTTPCodes.SuccesfullRespons.Ok).json(user).end();
         }
         else {
             res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
             console.log("usersRoute Get user: No match!");
-        }                
+        }
     }
     else {
         res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("No user Id was provided!").end();
     }
 })
 
+// Create new user
 USER_API.post('/', async (req, res, next) => {
 
     // This is using javascript object destructuring.
     // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
     // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
-    const { name, email, password } = req.body;
+    const { name, email, pswHash, isAdmin, highscore } = req.body;
 
 
-    if (name != "" && email != "" && password != "") {
+    if (name != "" && email != "" && pswHash != "") {
         let user = new User();
         user.name = name;
         user.email = email;
-
-        ///TODO: Do not save passwords.
-        user.pswHash = password;
+        //Hash pw before saving
+        const saltRounds = 10;
+        const hash = bcrypt.hashSync(pswHash, saltRounds);
+        user.pswHash = hash;
+        user.isAdmin = isAdmin;
+        user.highscore = highscore;
 
         ///TODO: Does the user exist?
         let exists = false;
+
+        console.log("User API: Create user: " + " Name: "+ name + " Password: " + pswHash + " Is admin?: " + isAdmin + " highscore: " + highscore);
 
         if (!exists) {
             //TODO: What happens if this fails?
@@ -102,16 +108,141 @@ USER_API.post('/', async (req, res, next) => {
 
 });
 
-USER_API.post('/:id', (req, res, next) => {
-    /// TODO: Edit user
-    const user = new User(); //TODO: The user info comes as part of the request 
-    user.save();
+// Update/edit existing user - Changed from post to put
+USER_API.put('/:id', async (req, res, next) => {
+
+    const userId = req.params.id;
+    const { name, email, pswHash, isAdmin, highscore } = req.body;
+
+    if (userId != null) {
+
+      // Check if user exist in db
+      let user = new User();
+      user.id = userId;
+      user = await user.get();
+
+      // DBManager returns user object with empty id if no match was found
+      if (user.id != "") {
+        console.log("usersRoute Update user: " + user.id + " " + user.name);
+
+        user.name = name;
+        user.email = email;
+        // Has the password been updated?
+        const bcryptHashRegex = /^\$2[ab]?\$\d{2}\$[A-Za-z0-9./]{53}$/;
+        const isBcryptHash = bcryptHashRegex.test(pswHash);
+
+        if (isBcryptHash) {
+          console.log("usersRoute Update user: Password is already hashed - leaving it as is");
+          user.pswHash = pswHash;
+        }
+        else {
+          console.log("usersRoute Update user: Password seems to be updated - hash it before saving")
+          const saltRounds = 10;
+          const hash = bcrypt.hashSync(pswHash, saltRounds);
+          user.pswHash = hash;
+        }
+        user.isAdmin = isAdmin;
+        user.highscore = highscore;
+
+        user = await user.save();
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+      }
+      else {
+          res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+          console.log("usersRoute Update user: No match!");
+      }
+    }
+    else {
+      res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+    }
 });
 
-USER_API.delete('/:id', (req, res) => {
+// Delete existing user
+USER_API.delete('/:id', async (req, res) => {
     /// TODO: Delete user.
-    const user = new User(); //TODO: Actual user
-    user.delete();
+    let user = new User(); //TODO: Actual user
+
+    const userId = req.params.id;
+    if (userId != null) {
+      user.id = userId;
+      user = await user.get();
+
+      // DBManager returns user object with empty id if no match was found
+      if (user.id != "") {
+        user.delete();
+        res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+      }
+      else {
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+        console.log("usersRoute Delete user: No match!");
+      }
+    }
+    else {
+      res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+    }
+});
+
+// This could be rewritten to be more generic so that we could update every property individually
+// Update only the user highscore for now..
+USER_API.patch('/:id', async (req, res, next) => {
+
+  const userId = req.params.id;
+  const { highscore } = req.body;
+
+  if (userId != null) {
+
+    // Check if user exist in db
+    let user = new User();
+    user.id = userId;
+    user = await user.get();
+
+    // DBManager returns user object with empty id if no match was found
+    if (user.id != "") {
+      console.log("usersRoute Update highscore for user: " + user.id + " " + user.name + " to " + highscore);
+
+      user.highscore = highscore;
+
+      user = await user.saveHighscore();
+      res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+    }
+    else {
+        res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+        console.log("usersRoute Update user: No match!");
+    }
+  }
+  else {
+    res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Mangler data felt").end();
+  }
+});
+
+// Login user
+USER_API.post('/login/', async (req, res, next) => {
+
+  const { email, pswHash } = req.body;
+
+  if (email != "" && pswHash != "") {
+      let user = new User();
+      user.email = email;
+      user.pswHash = pswHash;
+
+      // Does the user exist, and does the password match?
+      await user.authenticate();
+      let isAuthenticated = false;
+      // If the user was found in DB and password matched, the user will now have an id
+      if (user.id !== undefined && user.id !== "") {
+        isAuthenticated = true
+      }
+      if (isAuthenticated) {
+          console.log(`usersRoute login: User ${user.id} ${user.email} is authenticated!`);
+          //res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
+          res.status(HTTPCodes.SuccesfullRespons.Ok).json(user).end();
+      } else {
+          res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).end();
+      }
+
+  } else {
+      res.status(HTTPCodes.ClientSideErrorRespons.BadRequest).send("Missing data").end();
+  }
 });
 
 export default USER_API

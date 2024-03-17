@@ -1,31 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My app</title>
   <link rel="stylesheet" href="./css/styles.css">
 </head>
-
 <body>
   <header class="site-header">
-    <a href="/">The logo</a>
+    <a href="/">The Sequence Game</a>
     <nav>
       <ul class="site-menu" role="list">
-        <li><a href="/">Instructions</a></li>
-        <li><a href="/">About</a></li>
-        <li><a href="/">Settings</a></li>
+        <li><a class="hidden" id="adminLink" href="/">Admin</a></li>
+        <li class="hidden" id="loggedInUser" style="color: #fff;display: flex;align-items: center;">
+          <svg class="icon" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#person"/>
+          </svg>
+          <span id="loggedInUserName" style="margin-left: .25rem;"></span>
+        </li>
+        <li><a class="hidden" id="logoutLink" href="/">Log out</a></li>
       </ul>
     </nav>
   </header>
   <main>
+
+    <!-- Start: Register form -->
+    <div class="container hidden" id="registerContainer">
+      <h2 style="margin-bottom: 1.5rem;">Register</h2>
+      <div class="form-layout-stack" style="max-width: 400px;margin-bottom: 1rem;">
+        <label for="registerName">Name:</label><input type="email" id="registerName">
+        <label for="registerEmail">Email:</label><input type="email" id="registerEmail">
+        <label for="registerPsw">Password:</label><input type="password" id="registerPsw">
+        <label for="registerPswRep">Repeat password:</label><input type="password" id="registerPswRep">
+      </div>
+      <div style="display: flex;align-items:center;gap: 1rem;">
+        <button class="medium-button" id="registerButton">Register</button>
+        <button class="medium-button secondary" id="backToLoginButton">Back to login</button>
+      </div>
+      <div style="margin-top: 1.5rem">
+        <p id="registerValidationMessage"></p>
+      </div>
+    </div>
+    <!-- End: Register form -->
+
+    <!-- Start: Login form -->
+    <div class="container hidden" id="loginContainer">
+      <h2 style="margin-bottom: 1.5rem;">Log in</h2>
+      <div class="form-layout-stack" style="max-width: 400px;margin-bottom: 1rem;">
+        <label for="loginEmail">Email:</label><input type="email" id="loginEmail">
+        <label for="loginPsw">Password:</label><input type="password" id="loginPsw">
+      </div>
+      <div style="display: flex;align-items:center;gap: 1rem;">
+        <button class="medium-button" id="loginButton">Log in</button>
+        <button class="medium-button secondary" id="toRegisterButton">Don't have a user?</button>
+      </div>
+      <div style="margin-top: 1.5rem">
+        <p id="loginValidationMessage"></p>
+      </div>
+    </div>
+    <!-- End: Login form -->
+
     <!-- Start: The welcome scene -->
     <div class="container" id="welcomeScene">
       <div class="text-center">
-        <h1 style="font-size: 6rem;">Game Title</h1>
+        <p class="text-md text-muted text-uppercase" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
+        <h1 style="font-size: 6rem;">The Sequence</h1>
         <p class="text-lg text-muted" style="margin-top: 1.5rem;">Challenge your brain!</p>
-        <button id="startButton" class="big-button" style="margin-top: 2.5rem;">Click to play</button>
+        <button class="big-button" id="startButton" style="margin-top: 2.5rem;">Click to play</button>
       </div>
     </div>
     <!-- End: The welcome scene -->
@@ -42,20 +83,19 @@
     <!-- Start: The game scene-->
     <div class="container hidden" id="gameScene">
       <div class="text-center" style="padding-top: 3rem;">
-        <p class="text-md text-muted text-uppercase" id="levelTitle" style="margin-bottom: 1.5rem;color: #03dac5;">Level
-          1</p>
+        <p class="text-md text-muted text-uppercase" id="levelTitle" style="margin-bottom: 1.5rem;color: #03dac5;">Level 1</p>
+        <!-- <h1 id="mainTitle" style="font-size: 6rem;">Memorize sequence</h1> -->
         <p id="subTitle" class="text-lg text-muted" style="margin-top: 1.5rem;">Memorize the icon sequence.</p>
       </div>
       <!-- Start: The icon sequence display -->
       <div class="icon-sequence hidden">
         <div id="iconContainer" class="icon-container">
-          <svg id="icon" class="icon icon-6x" width="16" height="16" fill="currentColor">
-            <use xlink:href="/icons/bootstrap-icons.svg#heart-fill" />
+          <svg class="icon icon-6x" width="16" height="16" fill="currentColor">
+            <use xlink:href="/icons/bootstrap-icons.svg#heart-fill"/>
           </svg>
         </div>
       </div>
       <!-- End: The icon sequence display -->
-
       <!-- Start: The icon button grid - for guessing -->
       <div class="icon-grid" id="inputScene" style="margin-top: 3rem;">
         <button>
@@ -76,23 +116,15 @@
         <p class="text-lg text-muted" style="margin-top: 1.5rem;">incorrect order!</p>
         <button class="big-button" id="restartButton" style="margin-top: 2.5rem;">Try again</button>
       </div>
-      <!-- Start: highscores -->
       <div id="highscoresContainer" style="margin-top: 2.5rem;">
         <h2 style="margin-bottom: 1.5rem;">Highscores</h2>
       </div>
-      <!-- End: highscores -->
     </div>
     <!-- End: The game over scene -->
 
-    <!-- Start: List all users -->
-    <div class="container hidden" id="usersContainer">
-      <h2 style="margin-bottom: 1.5rem;">All Users</h2>
-    </div>
-    <!-- End: List all users -->
-
     <!-- Start: Create user form -->
-    <div class="container" id="userFormContainer">
-      <h2 style="margin-bottom: 1.5rem;">Create new user</h2>
+    <div class="container hidden" id="userFormContainer">
+      <h2 style="margin-bottom: 1.5rem;">Admin - Create new user</h2>
       <div class="form-layout-stack" style="max-width: 400px;margin-bottom: 1rem;">
         <label for="name">Name:</label><input type="text" id="name">
         <label for="email">Email:</label><input type="email" id="email">
@@ -108,12 +140,20 @@
     </div>
     <!-- End: Create user form -->
 
+    <!-- Start: Edit all users -->
+    <div class="container hidden" id="usersContainer"><h2 style="margin-bottom: 1.5rem;">Admin - View and edit all Users</h2></div>
+    <!-- End: Edit all users -->
+
   </main>
   <footer class="site-footer">
-    The footer <p id="Output"></p>
+    <p id="footerText"></p>
   </footer>
+  <script>
 
+</script>
+  <!-- <script type="module" src="/js/app.js"></script> -->
   <script type="module" src="/js/app.js"></script>
+  <!-- <script type="module" src="/js/game-manager.js"></script> -->
 </body>
 
 </html>

@@ -1,393 +1,143 @@
-import { GameManager } from './game-manager.js'
-  const gameManager = new GameManager();
-  gameManager.initGameStates();
+import { GameManager } from './game-manager.js';
+import * as helpers from './helpers.js';
 
-  const createUserButton = document.getElementById("createUserButton");
-  createUserButton.onclick = async function (e) {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const pswHash = document.getElementById("pswHash").value;
-      const isAdminCheckBox = document.getElementById("isAdmin");
-      const isAdmin = isAdminCheckBox.checked;
-      const highscore = 0; // Set initial score to zero when creating new user
-      const user = { name, email, pswHash, isAdmin, highscore };
-      const respon = await createUser("/user", user);
-      // Refresh the list again with recently added user
-      await getUsers();
-
-  }
-
-// The users table should be shown when entering admin mode
+// Containers
+const registerContainer = document.getElementById('registerContainer');
+const loginContainer = document.getElementById('loginContainer');
+const welcomeScene = document.getElementById('welcomeScene');
+const countdownScene = document.getElementById('countdownScene');
+const gameScene = document.getElementById('gameScene');
+const gameOverScene = document.getElementById('gameOverScene');
+const userFormContainer = document.getElementById('userFormContainer');
 const usersContainer = document.getElementById('usersContainer');
-getUsers();
-// The highscores should be shown when displaying the game over screen
-const highscoresContainer = document.getElementById('highscoresContainer');
-getHighscores();
-  // TODO move this to gameManager class
-// Demo on how to update the highscore of a user - should be done on game over
-async function updateHighScore(newscore, userId) {
-  const highscore = newscore;
-  const id = userId;
-  const data = { highscore };
 
-  try {
-      await setUserHighscore(id, data); // Wait for highscore update
-      await getUsers(); // Fetch users
-      await getHighscores(); // Fetch highscores
-  } catch (error) {
-      console.error('Error updating highscore or fetching data:', error);
+// Text and action items
+const loggedInUser = document.getElementById('loggedInUser');
+const logoutLink = document.getElementById('logoutLink');
+const adminLink = document.getElementById('adminLink');
+const registerButton = document.getElementById("registerButton");
+const toRegisterButton = document.getElementById("toRegisterButton");
+const backToLoginButton = document.getElementById("backToLoginButton");
+const loginButton = document.getElementById("loginButton");
+const createUserButton = document.getElementById("createUserButton");
+
+const gameManager = new GameManager();
+let isAuthenticated = helpers.checkAuthentication();
+
+if (isAuthenticated) {
+  console.log("User is logged in. Starting.");
+  if (loggedInUser) loggedInUser.classList.remove('hidden');
+  if (logoutLink) logoutLink.classList.remove('hidden');
+
+  // This needs to be done, only if you have isadmin=true
+  const userIsAdmin = localStorage.getItem("isadmin");
+  if (userIsAdmin == "true") {
+    if (adminLink) adminLink.classList.remove('hidden');
   }
+  gameManager.initGameStates();
 }
-updateHighScore(150, 82);
-
-//---------------------------------------------------------------------------------------------------
-// #region User functions
-//---------------------------------------------------------------------------------------------------
-
-// Get all users (Creates an HTML table with all users in the database)
-async function getUsers() {
- 
-  const requestUrl = '/user';
-
-  fetch(requestUrl)
-      .then(function (response) {
-          if (response.ok) {
-              return response.json();
-          }
-          throw new Error('Network response was not ok!');
-      })
-      .then(function (data) {
-          // Process the response data here
-          //console.log('Processing data: ' + JSON.stringify(data));
-
-          // Remove table if it already exists
-          const usersTableOld = document.getElementById('usersTable');
-          if (usersTableOld != null) {
-            usersTableOld.remove();
-          }
-
-          let usersTable = document.createElement("table");
-          usersTable.id = 'usersTable';
-
-          // Create the table data
-          for (let element of data) {
-              let row = usersTable.insertRow();
-              for (key in element) {
-                  //console.log("key is....." + key);
-                  let cell = row.insertCell();
-
-                  if (key == "id") {
-                    let text = document.createTextNode(element[key]);
-                    cell.appendChild(text);
-                  }
-                  else if (key == "name") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "name";
-                    cell.appendChild(input);
-                  }
-                  else if (key == "email") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "email";
-                    cell.appendChild(input);
-                  }
-                  else if (key == "pswHash") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "pswHash";
-                    cell.appendChild(input);
-                  }
-                  else if (key == "isAdmin") {
-                    let input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.id = element.id + "isAdmin";
-
-                    if (element[key] == true) {
-                      input.checked = true;
-                    }
-                    cell.appendChild(input);
-                  }
-                  else if (key == "highscore") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "highscore";
-                    input.readOnly = true;
-                    cell.appendChild(input);
-                  }
-                  // Any other elements will be editable inputs
-                  else {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    cell.appendChild(input);
-                  }
-              }
-
-              // Create a new cell for the button column
-              let buttonCell = row.insertCell();
-
-              // Add the save button
-              let saveButton = document.createElement("button");
-              saveButton.textContent = "Save";
-              saveButton.className = "small-button";
-              saveButton.id = "btnSaveUser-" + element.id;
-              buttonCell.appendChild(saveButton);
-              saveButton.addEventListener("click", function(){
-                console.log("Save user: " + element.name);
-                updateUser(element.id);
-              });
-
-              // Add the delete button
-              let editButton = document.createElement("button");
-              editButton.textContent = "Delete";
-              editButton.className = "small-button ml-2";
-              editButton.id = "btnDeleteUser-" + element.id;
-              buttonCell.appendChild(editButton);
-              editButton.addEventListener("click", function(){
-                console.log("Delete user: " + element.name);
-                deleteUser(element.id);
-              });
-          }
-
-          // Create the table headings
-          let thead = usersTable.createTHead();
-          let row = thead.insertRow();
-          for (let key of Object.keys(data[0])) {
-              let th = document.createElement("th");
-              let text = document.createTextNode(key);
-              th.appendChild(text);
-              row.appendChild(th);
-          }
-
-          // Create extra heading cell for the button col
-          let th = document.createElement("th");
-          let text = document.createTextNode("Actions");
-          th.appendChild(text);
-          row.appendChild(th);
-
-          usersContainer.appendChild(usersTable);
-      })
-      .catch(function (error) {
-          // Handle errors here
-          console.log('An error occured!');
-      });
+else {
+  if (loginContainer) loginContainer.classList.remove('hidden');
+  if (welcomeScene) welcomeScene.classList.add('hidden');
 }
 
-// Get user by id
-function getUser(userId) {
-
-  if (userId != '') {
-
-    const requestUrl = '/user/'; + userId;
-
-    fetch(requestUrl)
-      .then(function (response) {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error('Network response was not ok!');
-      })
-      .then(function (data) {
-        // Process the response data here
-        console.log('Processing data: ' + JSON.stringify(data));
-
-        output.innerHTML = 'Id: ' + data.id + ', Name: ' + data.name + ', Email:' + data.email + ', Hiscore:' + data.hiscore;
-      })
-      .catch(function (error) {
-        // Handle errors here
-        console.log('An error occured!');
-      });
+// Handle user login
+loginButton.onclick = async function (e) {
+  const email = document.getElementById("loginEmail");
+  const pswHash = document.getElementById("loginPsw");
+  const validationMsg = document.getElementById("loginValidationMessage");
+  const user = {email: email.value, pswHash: pswHash.value};
+  if (email.value != "" && pswHash.value != "") {
+    let response = await helpers.loginUser(user);
+    console.log("Login button clicked " + response);
+  }
+  else {
+    validationMsg.innerHTML = "Please provide valid email and password to log in"
   }
 }
 
-
-// Create user
-async function createUser(url, data) {
-  const header = {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-  };
-
-  const respon = await fetch(url, header);
-
-  return respon;
+// Handle go to register new user
+toRegisterButton.onclick = async function (e) {
+  console.log('Entering register user screen');
+  if (registerContainer) registerContainer.classList.remove('hidden');
+  if (loginContainer) loginContainer.classList.add('hidden');
 }
 
-
-// Update user
-async function updateUser(userId) {
-
-  const url = '/user/'; + userId;
-
-  // Get the inputs from the users table
-  const name = document.getElementById(userId + "name").value;
-  const email = document.getElementById(userId + "email").value;
-  const pswHash = document.getElementById(userId + "pswHash").value;
-  const isAdminCheckBox = document.getElementById(userId + "isAdmin");
-  const isAdmin = isAdminCheckBox.checked;
-  const highscore = document.getElementById(userId + "highscore").value;
-  const data = { userId, name, email, pswHash, isAdmin, highscore };
-
-  fetch(url, {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-  })
-  .then((response) => {
-      if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+// Handle register new user
+registerButton.onclick = async function (e) {
+  const name = document.getElementById("registerName");
+  const email = document.getElementById("registerEmail");
+  const pswHash = document.getElementById("registerPsw");
+  const pswHashRep = document.getElementById("registerPswRep");
+  const validationMsg = document.getElementById("registerValidationMessage");
+  const isAdmin = false;
+  const highscore = 0; // Set initial score to zero when registering new user
+  const user = { name: name.value, email: email.value, pswHash: pswHash.value, isAdmin, highscore };
+  if (email.value != "" && pswHash.value != "" && pswHashRep.value != "") {
+    let isValidEmail = helpers.validateEmail(email.value);
+    if (isValidEmail) {
+      if (pswHash.value === pswHashRep.value) {
+        const respon = await helpers.createUser("/user", user);
+        name.value = "";
+        email.value = "";
+        pswHash.value = "";
+        pswHashRep.value = "";
+        validationMsg.innerHTML = "User created. You can log in now!";
       }
-      return response.json();
-  })
-  .then((data) => {
-      // Handle the successful response data
-      console.log('Item updated successfully:', data);
-  })
-  .catch((error) => {
-      // Handle any errors
-      console.error('Error updating item:', error);
-  });
-}
-
-
-// Delete user
-async function deleteUser(userId) {
-  console.log("Inside delete user function");
-  const url = requestUrl = '/user';
-
-  fetch(url, {
-      method: 'DELETE', // Specify the HTTP method
-  })
-  .then((response) => {
-      if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+      else {
+        validationMsg.innerHTML = "Passwords do not match. Please retype your password.";
       }
-      return response.json(); // You can also use response.json() if the server returns JSON
-  })
-  .then((data) => {
-      // Handle the successful response data
-      console.log('Item deleted successfully:', data);
-
-      // Remove the deleted table row from the UI
-      const btn = document.getElementById('btnDeleteUser-' + userId);
-      if (btn != null) {
-        const tableRow = btn.closest('tr');
-        tableRow.remove();
-      };
-  })
-  .catch((error) => {
-      // Handle any errors
-      console.error('Error deleting item:', error);
-  });
+    }
+    else {
+      validationMsg.innerHTML = "Not a valid e-mail address";
+    }
+  }
+  else {
+    validationMsg.innerHTML = "Looks like you're missing some information there pal. Please try again!"
+  }
 }
 
-async function getHighscores() {
-
- const requestUrl = '/user';
-
-  fetch(requestUrl)
-      .then(function (response) {
-          if (response.ok) {
-              return response.json();
-          }
-          throw new Error('Network response was not ok!');
-      })
-      .then(function (data) {
-          // Process the response data here
-          //console.log('Processing data: ' + JSON.stringify(data));
-
-          // First, remove table if it already exists in the DOM
-          const highscoreTableOld = document.getElementById('highscoresTable');
-          if (highscoreTableOld != null) {
-            highscoreTableOld.remove();
-          }
-
-          // Create the table element
-          let highscoresTable = document.createElement("table");
-          highscoresTable.id = 'highscoresTable';
-
-          // Sort the array by highscores in descending order
-          data.sort((a, b) => b.highscore - a.highscore);
-
-          // Create the table cells
-          for (let element of data) {
-              let row = highscoresTable.insertRow();
-              for (key in element) {
-                  if (key == "name") {
-                    let cell = row.insertCell();
-                    let text = document.createTextNode(element[key]);
-                    cell.appendChild(text);
-                  }
-
-                  if (key == "highscore") {
-                    let cell = row.insertCell();
-                    let text = document.createTextNode(element[key]);
-                    cell.appendChild(text);
-                  }
-              }
-          }
-
-          // Create the table headings
-          let thead = highscoresTable.createTHead();
-          let row = thead.insertRow();
-          for (let key of Object.keys(data[0])) {
-            if (key == "name") {
-              let th = document.createElement("th");
-              let text = document.createTextNode(key);
-              th.appendChild(text);
-              row.appendChild(th);
-            }
-            if (key == "highscore") {
-              let th = document.createElement("th");
-              let text = document.createTextNode(key);
-              th.appendChild(text);
-              row.appendChild(th);
-            }
-          }
-          // Insert the table in the DOM
-          highscoresContainer.appendChild(highscoresTable);
-      })
-      .catch(function (error) {
-          // Handle errors here
-          console.log('An error occured!');
-      });
+// Handle go back to login
+backToLoginButton.onclick = async function (e) {
+  console.log('Entering login screen');
+  if (registerContainer) registerContainer.classList.add('hidden');
+  if (loginContainer) loginContainer.classList.remove('hidden');
 }
 
-// Set new highscore for user
-async function setUserHighscore(userId, data) {
-  const url = '/user/'; + userId;
-
-  fetch(url, {
-      method: 'PATCH',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-  })
-  .then((response) => {
-      if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      return response.json();
-  })
-  .then((data) => {
-      // Handle the successful response data
-      console.log('Item updated successfully:', data);
-  })
-  .catch((error) => {
-      // Handle any errors
-      console.error('Error updating item:', error);
-  });
+// Handle user logout
+logoutLink.onclick = function (e) {
+  e.preventDefault();
+  helpers.logoutUser();
 }
 
-//#endregion
+// Handle admin screen
+adminLink.onclick = function (e) {
+  e.preventDefault();
+  console.log('Entering admin mode');
+  if (registerContainer) registerContainer.classList.add('hidden');
+  if (loginContainer) loginContainer.classList.add('hidden');
+  if (welcomeScene) welcomeScene.classList.add('hidden');
+  if (countdownScene) countdownScene.classList.add('hidden');
+  if (gameScene) gameScene.classList.add('hidden');
+  if (gameOverScene) gameOverScene.classList.add('hidden');
+  if (userFormContainer) userFormContainer.classList.remove('hidden');
+  if (usersContainer) usersContainer.classList.remove('hidden');
+  helpers.getUsers();
+}
+
+// Handle admin create new user
+// (Save and delete are wired up on getUsers)
+createUserButton.onclick = async function (e) {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const pswHash = document.getElementById("pswHash").value;
+    const isAdminCheckBox = document.getElementById("isAdmin");
+    const isAdmin = isAdminCheckBox.checked;
+    const highscore = 0; // Set initial score to zero when creating new user
+    const user = { name, email, pswHash, isAdmin, highscore };
+    const respon = await helpers.createUser("/user", user);
+    // Refresh the list again with recently added user
+    await helpers.getUsers();
+}
+
+
