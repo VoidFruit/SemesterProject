@@ -250,12 +250,4 @@ export class GameManager {
     await helpers.getHighscores();
     this.toggleGameState('gameOverScene');
   }
-  // Callback function to fetch highscores
-async fetchHighscores() {
-  try {
-      await helpers.getHighscores();
-  } catch (error) {
-      console.error('Error fetching highscores:', error);
-  }
-}
 }
