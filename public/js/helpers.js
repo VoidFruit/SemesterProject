@@ -452,9 +452,16 @@ export function checkAuthentication() {
   const userHighscore = localStorage.getItem("highscore");
   const userIsAdmin = localStorage.getItem("isadmin");
 
-  if (userId != null) {
-    isLoggedIn = true;
-    loggedInUserName.innerHTML = userEmail;
+  // if (userId != null) {
+  //   isLoggedIn = true;
+  //   loggedInUserName.innerHTML = userEmail;
+  // }
+  if (userId && userEmail) {
+    // Additional checks (customize as needed):
+    if (userEmail.trim() !== "") {
+      isLoggedIn = true;
+      loggedInUserName.innerHTML = userEmail;
+    }
   }
   console.log(`Check auth from local storage ${userId} ${userName} ${userEmail} ${userHighscore} ${userIsAdmin}`);
   return isLoggedIn;
