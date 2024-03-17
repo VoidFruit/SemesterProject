@@ -256,6 +256,12 @@ export async function getHighscores() {
       throw new Error('Network response was not ok!');
     })
     .then(function (data) {
+      // Check if data is null or undefined
+      if (!data) {
+        console.error('Data is null or undefined');
+        return;
+      }
+
       // Process the response data here
       const highscoresContainer = document.getElementById('highscoresContainer');
 
