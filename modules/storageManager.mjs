@@ -89,10 +89,9 @@ class DBManager {
               console.log("StorageManager updateUser: " + user.id + " " + user.name + " was saved to DB" )
           }
 
-            //TODO Did we update the user?
 
         } catch (error) {
-            //TODO : Error handling?? Remember that this is a module seperate from your server
+           
             console.log(error);
         } finally {
             client.end(); // Always disconnect from the database.
@@ -109,13 +108,9 @@ class DBManager {
             await client.connect();
             const output = await client.query('Delete from "public"."Users"  where id = $1;', [user.id]);
 
-            // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-            // Of special intrest is the rows and rowCount properties of this object.
-
-            //TODO: Did the user get deleted?
-
+         
         } catch (error) {
-            //TODO : Error handling?? Remember that this is a module seperate from your server
+           
         } finally {
             client.end(); // Always disconnect from the database.
         }
@@ -131,22 +126,19 @@ class DBManager {
             await client.connect();
             const output = await client.query('INSERT INTO "public"."Users"("name", "email", "password", "isadmin", "highscore") VALUES($1::Text, $2::Text, $3::Text, $4::Boolean, $5::Integer ) RETURNING id;', [user.name, user.email, user.pswHash, user.isAdmin, user.highscore]);
 
-            // Client.Query returns an object of type pg.Result (https://node-postgres.com/apis/result)
-            // Of special intrest is the rows and rowCount properties of this object.
 
             if (output.rows.length == 1) {
-                // We stored the user in the DB.
                 user.id = output.rows[0].id;
                 console.log("StorageManager createUser: " + user.id + " " + user.name + " was saved to DB" )
             }
 
         } catch (error) {
             console.error(error);
-            //TODO : Error handling?? Remember that this is a module seperate from your server
+            
             console.log("Failed to create user!");
             console.log("Connectionstring is " + connectionString);
         } finally {
-            client.end(); // Always disconnect from the database.
+            client.end(); 
         }
 
         return user;
@@ -168,7 +160,7 @@ class DBManager {
         }
 
       } catch (error) {
-          //TODO : Error handling?? Remember that this is a module seperate from your server
+       
           console.log(error);
       } finally {
           client.end(); // Always disconnect from the database.

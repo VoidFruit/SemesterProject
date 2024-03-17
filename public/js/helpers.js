@@ -4,132 +4,129 @@ export async function getUsers() {
   const requestUrl = '/user/';
 
   fetch(requestUrl)
-      .then(function (response) {
-          if (response.ok) {
-              return response.json();
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Network response was not ok!');
+    })
+    .then(function (data) {
+      // Process the response data here
+      // Remove table if it already exists
+      const usersTableOld = document.getElementById('usersTable');
+      if (usersTableOld != null) {
+        usersTableOld.remove();
+      }
+
+      let usersTable = document.createElement("table");
+      usersTable.id = 'usersTable';
+
+      // Create the table data
+      for (let element of data) {
+        let row = usersTable.insertRow();
+        for (let key in element) {
+          let cell = row.insertCell();
+
+          if (key == "id") {
+            let text = document.createTextNode(element[key]);
+            cell.appendChild(text);
           }
-          throw new Error('Network response was not ok!');
-      })
-      .then(function (data) {
-          // Process the response data here
-          //console.log('Processing data: ' + JSON.stringify(data));
-
-          // Remove table if it already exists
-          const usersTableOld = document.getElementById('usersTable');
-          if (usersTableOld != null) {
-            usersTableOld.remove();
+          else if (key == "name") {
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = element[key];
+            input.id = element.id + "name";
+            cell.appendChild(input);
           }
-
-          let usersTable = document.createElement("table");
-          usersTable.id = 'usersTable';
-
-          // Create the table data
-          for (let element of data) {
-              let row = usersTable.insertRow();
-              for (let key in element) {
-                  //console.log("key is....." + key);
-                  let cell = row.insertCell();
-
-                  if (key == "id") {
-                    let text = document.createTextNode(element[key]);
-                    cell.appendChild(text);
-                  }
-                  else if (key == "name") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "name";
-                    cell.appendChild(input);
-                  }
-                  else if (key == "email") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "email";
-                    cell.appendChild(input);
-                  }
-                  else if (key == "pswHash") {
-                    let input = document.createElement("input");
-                    input.type = "password";
-                    input.value = element[key];
-                    input.id = element.id + "pswHash";
-                    cell.appendChild(input);
-                  }
-                  else if (key == "isAdmin") {
-                    let input = document.createElement("input");
-                    input.type = "checkbox";
-                    input.id = element.id + "isAdmin";
-
-                    if (element[key] == true) {
-                      input.checked = true;
-                    }
-                    cell.appendChild(input);
-                  }
-                  else if (key == "highscore") {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    input.id = element.id + "highscore";
-                    input.readOnly = true;
-                    cell.appendChild(input);
-                  }
-                  // Any other elements will be editable inputs
-                  else {
-                    let input = document.createElement("input");
-                    input.type = "text";
-                    input.value = element[key];
-                    cell.appendChild(input);
-                  }
-              }
-
-              // Create a new cell for the button column
-              let buttonCell = row.insertCell();
-
-              // Add the save button
-              let saveButton = document.createElement("button");
-              saveButton.textContent = "Save";
-              saveButton.className = "small-button";
-              saveButton.id = "btnSaveUser-" + element.id;
-              buttonCell.appendChild(saveButton);
-              saveButton.addEventListener("click", function(){
-                console.log("Save user: " + element.name);
-                updateUser(element.id);
-              });
-
-              // Add the delete button
-              let editButton = document.createElement("button");
-              editButton.textContent = "Delete";
-              editButton.className = "small-button ml-2";
-              editButton.id = "btnDeleteUser-" + element.id;
-              buttonCell.appendChild(editButton);
-              editButton.addEventListener("click", function(){
-                console.log("Delete user: " + element.name);
-                deleteUser(element.id);
-              });
+          else if (key == "email") {
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = element[key];
+            input.id = element.id + "email";
+            cell.appendChild(input);
           }
-
-          // Create the table headings
-          let thead = usersTable.createTHead();
-          let row = thead.insertRow();
-          for (let key of Object.keys(data[0])) {
-              let th = document.createElement("th");
-              let text = document.createTextNode(key);
-              th.appendChild(text);
-              row.appendChild(th);
+          else if (key == "pswHash") {
+            let input = document.createElement("input");
+            input.type = "password";
+            input.value = element[key];
+            input.id = element.id + "pswHash";
+            cell.appendChild(input);
           }
+          else if (key == "isAdmin") {
+            let input = document.createElement("input");
+            input.type = "checkbox";
+            input.id = element.id + "isAdmin";
 
-          // Create extra heading cell for the button col
-          let th = document.createElement("th");
-          let text = document.createTextNode("Actions");
-          th.appendChild(text);
-          row.appendChild(th);
+            if (element[key] == true) {
+              input.checked = true;
+            }
+            cell.appendChild(input);
+          }
+          else if (key == "highscore") {
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = element[key];
+            input.id = element.id + "highscore";
+            input.readOnly = true;
+            cell.appendChild(input);
+          }
+          // Any other elements will be editable inputs
+          else {
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = element[key];
+            cell.appendChild(input);
+          }
+        }
 
-          usersContainer.appendChild(usersTable);
-      })
-      .catch(function (error) {
-          // Handle errors here
-          console.log('An error occured!');
-      });
+        // Create a new cell for the button column
+        let buttonCell = row.insertCell();
+
+        // Add the save button
+        let saveButton = document.createElement("button");
+        saveButton.textContent = "Save";
+        saveButton.className = "small-button";
+        saveButton.id = "btnSaveUser-" + element.id;
+        buttonCell.appendChild(saveButton);
+        saveButton.addEventListener("click", function () {
+
+          updateUser(element.id);
+        });
+
+        // Add the delete button
+        let editButton = document.createElement("button");
+        editButton.textContent = "Delete";
+        editButton.className = "small-button ml-2";
+        editButton.id = "btnDeleteUser-" + element.id;
+        buttonCell.appendChild(editButton);
+        editButton.addEventListener("click", function () {
+
+          deleteUser(element.id);
+        });
+      }
+
+      // Create the table headings
+      let thead = usersTable.createTHead();
+      let row = thead.insertRow();
+      for (let key of Object.keys(data[0])) {
+        let th = document.createElement("th");
+        let text = document.createTextNode(key);
+        th.appendChild(text);
+        row.appendChild(th);
+      }
+
+      // Create extra heading cell for the button col
+      let th = document.createElement("th");
+      let text = document.createTextNode("Actions");
+      th.appendChild(text);
+      row.appendChild(th);
+
+      usersContainer.appendChild(usersTable);
+    })
+    .catch(function (error) {
+      // Handle errors here
+
+    });
 }
 
 // Get user by id
@@ -148,7 +145,7 @@ export function getUser(userId) {
       })
       .then(function (data) {
         // Process the response data here
-        console.log('Processing data: ' + JSON.stringify(data));
+
 
         output.innerHTML = 'Id: ' + data.id + ', Name: ' + data.name + ', Email:' + data.email + ', Hiscore:' + data.hiscore;
       })
@@ -162,11 +159,11 @@ export function getUser(userId) {
 // Create user (admin)
 export async function createUser(url, data) {
   const header = {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   };
 
   const respon = await fetch(url, header);
@@ -189,26 +186,26 @@ export async function updateUser(userId) {
   const data = { userId, name, email, pswHash, isAdmin, highscore };
 
   fetch(url, {
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    method: 'PUT',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   })
-  .then((response) => {
+    .then((response) => {
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       return response.json();
-  })
-  .then((data) => {
+    })
+    .then((data) => {
       // Handle the successful response data
       console.log('Item updated successfully:', data);
-  })
-  .catch((error) => {
+    })
+    .catch((error) => {
       // Handle any errors
       console.error('Error updating item:', error);
-  });
+    });
 }
 
 // Delete user (admin)
@@ -217,15 +214,15 @@ export async function deleteUser(userId) {
   const url = '/user/' + userId;
 
   fetch(url, {
-      method: 'DELETE', // Specify the HTTP method
+    method: 'DELETE', // Specify the HTTP method
   })
-  .then((response) => {
+    .then((response) => {
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       return response.json(); // You can also use response.json() if the server returns JSON
-  })
-  .then((data) => {
+    })
+    .then((data) => {
       // Handle the successful response data
       console.log('Item deleted successfully:', data);
 
@@ -235,11 +232,11 @@ export async function deleteUser(userId) {
         const tableRow = btn.closest('tr');
         tableRow.remove();
       };
-  })
-  .catch((error) => {
+    })
+    .catch((error) => {
       // Handle any errors
       console.error('Error deleting item:', error);
-  });
+    });
 }
 
 // Get hiscores
@@ -282,7 +279,6 @@ export async function getHighscores() {
 
       // Create the table cells
       for (let element of data) {
-        console.log("Element " + element);
         let row = highscoresTable.insertRow();
         for (let key in element) {
           if (key == "name") {
@@ -340,40 +336,38 @@ export async function setUserHighscore(userId, data) {
   const url = '/user/' + userId;
 
   fetch(url, {
-      method: 'PATCH',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    method: 'PATCH',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   })
-  .then((response) => {
+    .then((response) => {
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
       return response.json();
-  })
-  .then((data) => {
+    })
+    .then((data) => {
       // Handle the successful response data
-      console.log('Item updated successfully:', data);
-  })
-  .catch((error) => {
+    })
+    .catch((error) => {
       // Handle any errors
       console.error('Error updating item:', error);
-  });
+    });
 }
 
 // Register user
 export async function registerUser(url, data) {
   const header = {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   };
 
   const respon = await fetch(url, header);
-
   return respon;
 }
 
@@ -388,33 +382,33 @@ export async function loginUser(data) {
     },
     body: JSON.stringify(data),
   })
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    console.log('Helpers: User logged in successfully:', response);
-    return response.json();
-  })
-  .then((data) => {
-    console.log('Helpers: User logged in successfully:', data);
-    // Clear existing local storage entries
-    localStorage.clear();
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      console.log('Helpers: User logged in successfully:', response);
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Helpers: User logged in successfully:', data);
+      // Clear existing local storage entries
+      localStorage.clear();
 
-    // Add logged in user to local storage
-    localStorage.setItem("id", data.id);
-    localStorage.setItem("name", data.name);
-    localStorage.setItem("email", data.email);
-    localStorage.setItem("highscore", data.highscore);
-    localStorage.setItem("isadmin", data.isadmin);
+      // Add logged in user to local storage
+      localStorage.setItem("id", data.id);
+      localStorage.setItem("name", data.name);
+      localStorage.setItem("email", data.email);
+      localStorage.setItem("highscore", data.highscore);
+      localStorage.setItem("isadmin", data.isadmin);
 
-    // Force a page reload so that local storage can be checked again
-    window.location.reload();
-    //window.location.reload(true);
-  })
-  .catch((error) => {
+      // Force a page reload so that local storage can be checked again
+      window.location.reload();
+
+    })
+    .catch((error) => {
       // Handle any errors
       console.error('Error logging in user:', error);
-  });
+    });
 }
 
 export function logoutUser() {
@@ -427,11 +421,11 @@ export function getCookie(name) {
   const nameEQ = name + "=";
   const ca = document.cookie.split('; ');
   for (let i = 0; i < ca.length; i++) {
-      const c = ca[i];
-      if (c.indexOf(nameEQ) === 0) {
-          const value = c.substring(nameEQ.length);
-          return decodeURIComponent(value); // Returns the first found cookie
-      }
+    const c = ca[i];
+    if (c.indexOf(nameEQ) === 0) {
+      const value = c.substring(nameEQ.length);
+      return decodeURIComponent(value); // Returns the first found cookie
+    }
   }
   return null; // Cookie not found
 }
@@ -452,12 +446,8 @@ export function checkAuthentication() {
   const userHighscore = localStorage.getItem("highscore");
   const userIsAdmin = localStorage.getItem("isadmin");
 
-  // if (userId != null) {
-  //   isLoggedIn = true;
-  //   loggedInUserName.innerHTML = userEmail;
-  // }
   if (userId && userEmail) {
-    // Additional checks (customize as needed):
+    // Additional checks
     if (userEmail.trim() !== "") {
       isLoggedIn = true;
       loggedInUserName.innerHTML = userEmail;

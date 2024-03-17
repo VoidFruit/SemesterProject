@@ -11,8 +11,8 @@ export class GameManager {
     this.mainTitle = document.getElementById('mainTitle');
     this.subTitle = document.getElementById('subTitle');
     this.gameOver = document.getElementById('gameOverScene');
-    this.iconContainer = document.getElementById('iconContainer'); 
-    this.inputScene = document.getElementById('inputScene'); 
+    this.iconContainer = document.getElementById('iconContainer');
+    this.inputScene = document.getElementById('inputScene');
     this.currentLevel = 2;
     this.iconSequence = [];
     this.playerSequence = [];
@@ -77,7 +77,7 @@ export class GameManager {
     inputScene.innerHTML = '';
 
     this.iconSequence = [];
-    const availableIcons = [...this.icons]; // Create a copy of the icons array
+    const availableIcons = [...this.icons];
 
     // Select 'currentLevel' unique icons for the sequence
     for (let i = 0; i < this.currentLevel; i++) {
@@ -91,7 +91,7 @@ export class GameManager {
 
     this.updateSubtitle('Memorize the icon sequence.');
     this.displayIconSequence();
-    console.log("running icon sequence!");
+
   }
 
   // Display the icon sequence to the player
@@ -106,7 +106,6 @@ export class GameManager {
         } else {
           console.error('Use element not found');
         }
-        console.log(`Displaying icon: ${iconName}`); // Log the icon being displayed
       }, 1000 * index); // Display each icon one second apart
     });
 
@@ -121,7 +120,6 @@ export class GameManager {
       // generate the buttons for player input based on the sequence
       this.generateIconButtons();
       this.updateSubtitle('Input the correct sequence order.');
-      console.log("Icon sequence complete, buttons displayed for user input.");
     }, 1000 * this.iconSequence.length); // Wait for the last icon to be displayed before clearing and showing buttons
   }
 
@@ -157,10 +155,10 @@ export class GameManager {
 
   handlePlayerInput(selectedIcon) {
     const pressedButton = event.currentTarget;
-    pressedButton.classList.add('click'); // Add 'clicked' class for visual feedback
-    // Check if the button has already been pressed
+    pressedButton.classList.add('click');
+
     if (!pressedButton.classList.contains('pressed')) {
-      // Remove 'clicked' class after a short delay, add 'pressed' permanently
+
       setTimeout(() => {
         pressedButton.classList.remove('click');
         pressedButton.classList.add('pressed'); // Mark as permanently pressed
@@ -168,7 +166,6 @@ export class GameManager {
       }, 150); // Adjust timing as needed
 
       this.playerSequence.push(selectedIcon);
-      console.log(`Icon selected: ${selectedIcon}`); // Debugging
 
       // Check if the player has finished inputting their sequence
       if (this.playerSequence.length === this.iconSequence.length) {
@@ -179,7 +176,6 @@ export class GameManager {
 
   checkPlayerSequence() {
     if (JSON.stringify(this.playerSequence) === JSON.stringify(this.iconSequence)) {
-      console.log('Correct sequence! Advancing to the next level.');
       // Turn all buttons green for visual confirmation of correct sequence
       document.querySelectorAll('.icon-grid button').forEach(button => {
         button.classList.add('correct');
@@ -189,7 +185,7 @@ export class GameManager {
         this.currentLevel++;
         this.playerSequence = [];
         document.querySelectorAll('.icon-grid button').forEach(button => {
-          button.classList.remove('correct'); // Reset the buttons
+          button.classList.remove('correct');
         });
         this.updateLevelDisplay(); // Update the level display
         this.runIconSequence();
@@ -203,7 +199,7 @@ export class GameManager {
   generateRestartButton() {
     // This check ensures multiple event listeners
     this.restartButton.addEventListener('click', () => {
-      console.log("restart button clicked");
+
       this.currentLevel = 1; // Reset to initial level
       this.iconSequence = [];
       this.playerSequence = [];
@@ -224,19 +220,17 @@ export class GameManager {
       gameOverMessage.textContent = `You reached Level ${this.currentLevel}!`;
     }
 
-    //current level represents the score
+    // current level represents the score
     const newScore = this.currentLevel;
 
     // New highscore
     if (this.userHighscore && this.userId) {
-      console.log('user is ' + this.userId);
-      console.log('highscore is ' + this.userHighscore);
-      console.log('current score is ' + newScore);
+
 
       const highScoreNumber = parseInt(this.userHighscore, 10);
 
       if (newScore > highScoreNumber) {
-        console.log('New score is higher. Update in db');
+
         const data = { "highscore": newScore };
 
         try {

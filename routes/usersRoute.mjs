@@ -12,17 +12,13 @@ const users = [];
 
 // Get all users
 USER_API.get('/', async (req, res, next) => {
-    // SuperLogger.log("Demo of logging tool");
-    // SuperLogger.log("A important msg", SuperLogger.LOGGING_LEVELS.CRTICAL);
-    //console.log("Get all users");
-
+ 
     let users = await DBManager.getUsers();
 
     let usersArray = [];
 
     if (users != null) {
         users.forEach(element => {
-            //console.log("User name " + element.name);
             let user = new User();
             user.id = element.id;
             user.name = element.name;
@@ -32,8 +28,7 @@ USER_API.get('/', async (req, res, next) => {
             user.highscore = element.highscore;
             usersArray.push(user);
         });
-        //res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(users)).end();
-        //res.send(users);
+     
         res.send(usersArray);
     }
     else {
@@ -43,9 +38,6 @@ USER_API.get('/', async (req, res, next) => {
 
 // Get user
 USER_API.get('/:id', async (req, res, next) => {
-
-    // Tip: All the information you need to get the id part of the request can be found in the documentation
-    // https://expressjs.com/en/guide/routing.html (Route parameters)
 
     const userId = req.params.id;
 
@@ -72,9 +64,7 @@ USER_API.get('/:id', async (req, res, next) => {
 // Create new user
 USER_API.post('/', async (req, res, next) => {
 
-    // This is using javascript object destructuring.
-    // Recomend reading up https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#syntax
-    // https://www.freecodecamp.org/news/javascript-object-destructuring-spread-operator-rest-parameter/
+
     const { name, email, pswHash, isAdmin, highscore } = req.body;
 
 
@@ -89,13 +79,12 @@ USER_API.post('/', async (req, res, next) => {
         user.isAdmin = isAdmin;
         user.highscore = highscore;
 
-        ///TODO: Does the user exist?
         let exists = false;
 
         console.log("User API: Create user: " + " Name: "+ name + " Password: " + pswHash + " Is admin?: " + isAdmin + " highscore: " + highscore);
 
         if (!exists) {
-            //TODO: What happens if this fails?
+   
             user = await user.save();
             res.status(HTTPCodes.SuccesfullRespons.Ok).json(JSON.stringify(user)).end();
         } else {
@@ -108,7 +97,7 @@ USER_API.post('/', async (req, res, next) => {
 
 });
 
-// Update/edit existing user - Changed from post to put
+
 USER_API.put('/:id', async (req, res, next) => {
 
     const userId = req.params.id;
@@ -159,8 +148,8 @@ USER_API.put('/:id', async (req, res, next) => {
 
 // Delete existing user
 USER_API.delete('/:id', async (req, res) => {
-    /// TODO: Delete user.
-    let user = new User(); //TODO: Actual user
+
+    let user = new User(); 
 
     const userId = req.params.id;
     if (userId != null) {
@@ -182,8 +171,6 @@ USER_API.delete('/:id', async (req, res) => {
     }
 });
 
-// This could be rewritten to be more generic so that we could update every property individually
-// Update only the user highscore for now..
 USER_API.patch('/:id', async (req, res, next) => {
 
   const userId = req.params.id;
