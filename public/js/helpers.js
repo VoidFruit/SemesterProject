@@ -244,85 +244,89 @@ export async function deleteUser(userId) {
 
 // Get hiscores
 // Get all users (Creates an HTML table with all users in the database)
-// Get hiscores
 export async function getHighscores() {
+
   const requestUrl = '/user/';
 
-  try {
-    const response = await fetch(requestUrl);
-    if (!response.ok) {
+  fetch(requestUrl)
+    .then(function (response) {
+      if (response.ok) {
+        return response.json();
+      }
       throw new Error('Network response was not ok!');
-    }
-    const data = await response.json();
+    })
+    .then(function (data) {
+      // Process the response data here
+      const highscoresContainer = document.getElementById('highscoresContainer');
 
-    // Process the response data here
-    const highscoresContainer = document.getElementById('highscoresContainer');
-    console.log("Inside getHighScores " + data);
+      console.log("Inside getHighScores " + data);
 
-    // First, remove table if it already exists in the DOM
-    const highscoreTableOld = document.getElementById('highscoresTable');
-    if (highscoreTableOld != null) {
-      highscoreTableOld.remove();
-    }
+      // First, remove table if it already exists in the DOM
+      const highscoreTableOld = document.getElementById('highscoresTable');
+      if (highscoreTableOld != null) {
+        highscoreTableOld.remove();
+      }
 
-    // Create the table element
-    let highscoresTable = document.createElement("table");
-    highscoresTable.id = 'highscoresTable';
+      // Create the table element
+      let highscoresTable = document.createElement("table");
+      highscoresTable.id = 'highscoresTable';
 
-    // Sort the array by highscores in descending order
-    data.sort((a, b) => b.highscore - a.highscore);
+      // Sort the array by highscores in descending order
+      data.sort((a, b) => b.highscore - a.highscore);
 
-    // Create the table cells
-    for (let element of data) {
-      console.log("Element " + element);
-      let row = highscoresTable.insertRow();
-      for (let key in element) {
+      // Create the table cells
+      for (let element of data) {
+        console.log("Element " + element);
+        let row = highscoresTable.insertRow();
+        for (let key in element) {
+          if (key == "name") {
+            let cell = row.insertCell();
+            let text = document.createTextNode(element[key]);
+            cell.appendChild(text);
+          }
+          if (key == "email") {
+            let cell = row.insertCell();
+            let text = document.createTextNode(element[key]);
+            cell.appendChild(text);
+          }
+          else if (key == "highscore") {
+            let cell = row.insertCell();
+            let text = document.createTextNode(element[key]);
+            cell.appendChild(text);
+          }
+        }
+      }
+
+      // Create the table headings
+      let thead = highscoresTable.createTHead();
+      let row = thead.insertRow();
+      for (let key of Object.keys(data[0])) {
         if (key == "name") {
-          let cell = row.insertCell();
-          let text = document.createTextNode(element[key]);
-          cell.appendChild(text);
+          let th = document.createElement("th");
+          let text = document.createTextNode(key);
+          th.appendChild(text);
+          row.appendChild(th);
         }
         if (key == "email") {
-          let cell = row.insertCell();
-          let text = document.createTextNode(element[key]);
-          cell.appendChild(text);
-        } else if (key == "highscore") {
-          let cell = row.insertCell();
-          let text = document.createTextNode(element[key]);
-          cell.appendChild(text);
+          let th = document.createElement("th");
+          let text = document.createTextNode(key);
+          th.appendChild(text);
+          row.appendChild(th);
+        }
+        else if (key == "highscore") {
+          let th = document.createElement("th");
+          let text = document.createTextNode(key);
+          th.appendChild(text);
+          row.appendChild(th);
         }
       }
-    }
-
-    // Create the table headings
-    let thead = highscoresTable.createTHead();
-    let row = thead.insertRow();
-    for (let key of Object.keys(data[0])) {
-      if (key == "name") {
-        let th = document.createElement("th");
-        let text = document.createTextNode(key);
-        th.appendChild(text);
-        row.appendChild(th);
-      }
-      if (key == "email") {
-        let th = document.createElement("th");
-        let text = document.createTextNode(key);
-        th.appendChild(text);
-        row.appendChild(th);
-      } else if (key == "highscore") {
-        let th = document.createElement("th");
-        let text = document.createTextNode(key);
-        th.appendChild(text);
-        row.appendChild(th);
-      }
-    }
-    // Insert the table in the DOM
-    highscoresContainer.appendChild(highscoresTable);
-  } catch (error) {
-    // Handle errors here
-    console.log('An error occurred while fetching highscores:', error);
-    throw error; // Re-throw the error for the caller to handle
-  }
+      // Insert the table in the DOM
+      highscoresContainer.appendChild(highscoresTable);
+    })
+    .catch(function (error) {
+      // Handle errors here
+      console.log('An error occured! ' + error);
+    });
 }
 
 // Set new highscore for user
